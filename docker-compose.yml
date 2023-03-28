@@ -1,17 +1,17 @@
 version: '3.8'
 services:
   client:
-    container_name: node-client
+    container_name: client
     build: ./client
     depends_on:
-      - app
+      - server
     ports:
       - "3000:3000"
     volumes:
       - ./client:/usr/src/app/client
       - /usr/src/app/client/node_modules
-  app:
-    container_name: nodejs-app
+  server:
+    container_name: server
     build: ./server
     depends_on:
       - postgres
@@ -21,9 +21,9 @@ services:
       - ./server:/usr/src/app/
       - /usr/src/app/node_modules
     environment:
-      - DATABASE_URL=postgres://root:root@localhost:5432/root
+      - DATABASE_URL=postgres://root:root@postgres:5432/root
   postgres:
-    container_name: postgres-app
+    container_name: postgres
     image: postgres:14.1-alpine
     restart: always
     environment:
