@@ -1,8 +1,0 @@
-{
-    "name": "my-app",
-    "version": "1.0.0",
-    "scripts": {
-        "stop": "docker-compose down",
-        "start": "docker-compose up -d"
-    }
-}
