@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  client:
+    container_name: node-client
+    build: ./client
+    depends_on:
+      - app
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/usr/src/app/client
+      - /usr/src/app/client/node_modules
+  app:
+    container_name: nodejs-app
+    build: ./server
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./server:/usr/src/app/
+      - /usr/src/app/node_modules
+    environment:
+      - DATABASE_URL=postgres://root:root@localhost:5432/root
+  postgres:
+    container_name: postgres-app
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=root
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./server/database-seed.sql:/docker-entrypoint-initdb.d/database-seed.sql
