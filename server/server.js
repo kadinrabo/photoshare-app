@@ -1,19 +1,34 @@
-const { Client } = require("pg");
+// Turn on the express app
 const express = require("express");
-const cors = require('cors');
 const app = express();
+
+// Include the database client and set port to listen on
+const client = require('./util/database');
+const bodyparser = require('body-parser');
+const cors = require('cors');
 const port = 8080;
 
 app.use(cors());
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: false }));
 
-const client = new Client({
-  password: "root",
-  user: "root",
-  host: "postgres",
-  port: "5432",
-  database: "root",
+// Set a route for http://localhost:8080/users
+app.use('/users', require('./routes/users'));
+
+// Just show a message for http://localhost:8080/
+app.get('/', (req, res, next) => {
+  res.send('Api running 👍');
 });
 
+// Error handling
+app.use((error, req, res, next) => {
+  console.log(error);
+  const status = error.statusCode || 500;
+  const message = error.message;
+  res.status(status).json({ message: message });
+});
+
+// Connect to the database using the client and have the express app api listen for requests
 setTimeout(() => {
   client.connect()
   .then(() => {
@@ -27,17 +42,3 @@ setTimeout(() => {
     console.error("Error connecting to Postgres client:", err);
   });
 }, 5000);
-
-app.get("/", async (req, res) => {
-  const results = await client
-    .query("SELECT * FROM UserTable")
-    .then((payload) => {
-      return payload.rows;
-    })
-    .catch(() => {
-      throw new Error("Query failed");
-    });
-  res.setHeader("Content-Type", "application/json");
-  res.status(200);
-  res.send(JSON.stringify(results));
-});
