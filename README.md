@@ -4,6 +4,9 @@ Clone the repo with `git clone https://github.com/kadinrabo/photoshare-app.git p
 
 Download docker version 20.10.23, build 7155243
 
+My node version: v19.8.1
+My npm version: 9.6.2
+
 In photoshare-app directory, run `docker-compose up -d` to start the containers and view the website at http://localhost:3000/
 
 In photoshare-app directory, run `docker-compose down` to stop the containers
