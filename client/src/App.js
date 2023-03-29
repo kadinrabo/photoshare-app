@@ -1,28 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import './App.css';
-import fetchUser from './api';
+import { Route } from 'react-router-dom';
+import Home from './components/Home';
+import Login from './components/Login';
+import Signup from './components/Signup';
 
 function App() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    async function fetchUserData() {
-      const fetchedUser = await fetchUser(1);
-      setUser(fetchedUser);
-    }
-
-    fetchUserData();
-  }, []);
-
   return (
     <div>
-      {user && (
-        <div>
-          <h1>Uid: {user.uid}</h1>
-          <p>First Name: {user.fname}</p>
-          <p>Last Name: {user.lname}</p>
-        </div>
-      )}
+      <Route exact path="/" component={Login} />
+      <Route exact path="/signup" component={Signup} />
+      <Route exact path="/home" component={Home} />
     </div>
   );
 }
