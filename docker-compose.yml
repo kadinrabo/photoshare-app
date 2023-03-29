@@ -8,8 +8,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./client:/usr/src/app/client
-      - /usr/src/app/client/node_modules
+      - ./client:/usr/src/app/
+      - /usr/src/app/node_modules
   server:
     container_name: server
     build: ./server
