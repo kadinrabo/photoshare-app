@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 import './App.css';
+import fetchUser from './api';
 
 function App() {
-  const [data, setData] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await fetch('http://localhost:8080/');
-      const json = await response.text();
-      setData(json);
+    async function fetchUserData() {
+      const fetchedUser = await fetchUser(1);
+      setUser(fetchedUser);
     }
 
-    fetchData();
+    fetchUserData();
   }, []);
 
   return (
-    <div className="App">
-      {data ? (data) : (<p>Loading data...</p>)}
+    <div>
+      {user && (
+        <div>
+          <h1>Uid: {user.uid}</h1>
+          <p>First Name: {user.fname}</p>
+          <p>Last Name: {user.lname}</p>
+        </div>
+      )}
     </div>
   );
 }
