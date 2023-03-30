@@ -1,9 +1,9 @@
-import User from './User';
+import User from "./User";
 
 class Users {
-  constructor(usersData) {
-    this.users = usersData.map(userData => new User(userData));
-  }
+	constructor(usersData) {
+		this.users = usersData.map((userData) => new User(userData));
+	}
 }
 
 export default Users;
