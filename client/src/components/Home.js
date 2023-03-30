@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import fetchUser from '../api';
+import { fetchUserByUid } from '../api';
+import Auth from './Auth';
 
 function Home() {
     const [user, setUser] = useState(null);
     
     useEffect(() => {
         async function fetchUserData() {
-            const fetchedUser = await fetchUser(1);
+            const fetchedUser = await fetchUserByUid(1);
             setUser(fetchedUser);
         }
 
@@ -21,4 +22,4 @@ function Home() {
     );
 }
 
-export default Home;
+export default Auth(Home);
