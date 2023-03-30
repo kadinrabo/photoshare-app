@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { fetchUserByEmail } from '../api';
+import { fetchUsersBySearch } from '../api';
 
 function Login() {
     const [email, setEmail] = useState('');
@@ -11,7 +11,7 @@ function Login() {
 
     useEffect(() => {
         async function fetchUserData() {
-            const fetchedUser = await fetchUserByEmail(email);
+            const fetchedUser = await fetchUsersBySearch(email);
             setUser(fetchedUser);
         }
         if (formSubmitted && email && pass) {

@@ -1,28 +1,23 @@
 import User from './models/User';
+import Users from './models/Users';
 
-export async function fetchUserByUid(userId) {
+export async function fetchUsersBySearch(searchText)
+{
   try {
-    // get the response
-    const response = await fetch(`http://localhost:8080/users/${userId}`);
-    // wait for the promise containing the data
+    const response = await fetch(`http://localhost:8080/users/${searchText}`)
     const data = await response.json();
-    const user = new User(data);
-    return user;
+    // One user is being searched for
+    if (/^\d+$/.test(searchText) || /^\S+@\S+\.\S+$/.test(searchText)) {
+      const user = new User(data[0]);
+      return user;
+    }
+    // Multiple user query
+    else {
+      const users = new Users(data);
+      return users;
+    }
   } catch (error) {
-    console.error(error);
-  }
-}
-
-export async function fetchUserByEmail(userEmail) {
-  try {
-    // get the response
-    const response = await fetch(`http://localhost:8080/users/${userEmail}`);
-    // wait for the promise containing the data
-    const data = await response.json();
-    const user = new User(data);
-    return user;
-  } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 }
 

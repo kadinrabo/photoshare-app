@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { fetchUserByUid } from '../api';
+import { fetchUsersBySearch } from '../api';
 
 function Auth(Component) {
   return function AuthenticatedComponent(props) {
@@ -10,7 +10,7 @@ function Auth(Component) {
     useEffect(() => {
       const uid = window.localStorage.getItem('uid');
       async function fetchUserData() {
-        const fetchedUser = await fetchUserByUid(uid);
+        const fetchedUser = await fetchUsersBySearch(uid);
         setUser(fetchedUser);
       }
       if (!uid) {

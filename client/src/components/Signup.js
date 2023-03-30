@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { createNewUser, fetchUserByEmail } from '../api';
+import { createNewUser, fetchUsersBySearch } from '../api';
 
 function isValidDate(str) {
     const dobRegex = /^(-?\d{1,6})-((0[1-9]|1[0-2])|-0[1-9]|-1[0-2])-((0[1-9]|[12][0-9]|3[01])|-0[1-9]|-[12][0-9]|-3[01])$/;
@@ -27,7 +27,7 @@ function Signup() {
     useEffect(() => {
         async function createUserData() {
             await createNewUser(email, fname, lname, pass, dob, gender, home);
-            const fetchedUser = await fetchUserByEmail(email);
+            const fetchedUser = await fetchUsersBySearch(email);
             setUser(fetchedUser);
         }
         if (formSubmitted && fname && lname && dob && email && pass) {
