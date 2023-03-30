@@ -1,12 +1,14 @@
 const controller = require('../controllers/users');
 const router = require('express').Router();
 
-// Configure a handler for http://localhost:8080/users/
-router.get('/', controller.getAllUsers); // /users
+ // /users
+router.get('/', controller.getAllUsers);
+router.post('/', controller.createNewUser);
 
-router.get('/:email([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})',
-controller.getUserByEmail); // /users/:email
+// /users/:email
+router.get('/:email([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})', controller.getUserByEmail);
 
-router.get('/:uid', controller.getUserByUid); // /users/:uid
+// /users/:uid
+router.get('/:uid', controller.getUserByUid);
 
 module.exports = router;

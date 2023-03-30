@@ -3,9 +3,8 @@ import { useHistory } from 'react-router-dom';
 import { fetchUserByEmail } from '../api';
 
 function Login() {
-
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [pass, setPass] = useState('');
     const [user, setUser] = useState(null);
     const [formSubmitted, setFormSubmitted] = useState(false);
     const history = useHistory();
@@ -15,39 +14,44 @@ function Login() {
             const fetchedUser = await fetchUserByEmail(email);
             setUser(fetchedUser);
         }
-        if (formSubmitted && email && password) {
+        if (formSubmitted && email && pass) {
             fetchUserData();
         }
-    }, [formSubmitted, email, password]);
+    }, [formSubmitted, email, pass]);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (email !== '' && password !== '') {
+        if (email !== '' && pass !== '') {
             setFormSubmitted(true);
         }
     };
 
+    const handleSignUp = () => {
+        history.push('/signup');
+    };
+
     useEffect(() => {
-        if (user !== null && user.pass === password) {
+        if (user !== null && user.pass === pass) {
             history.push('/home');
             window.localStorage.setItem('uid', user.uid);
         }
-    }, [user, password]);
+    }, [user, pass]);
 
     return (
         <div>
             <h1>Photoshare App</h1>
-            <h2>Login:</h2>
+            <h2>Login</h2>
             <form onSubmit={handleSubmit}>
                 <label> Email:
                     <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </label>
                 <br />
                 <label> Password:
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <input type="pass" value={pass} onChange={(e) => setPassword(e.target.value)} />
                 </label>
                 <br />
-                <button type="submit">Submit</button>
+                <button type="submit">Sign In</button>
+                <button type="button" onClick={handleSignUp}>Sign Up</button>
             </form>
         </div>
     );

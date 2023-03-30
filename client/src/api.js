@@ -25,3 +25,18 @@ export async function fetchUserByEmail(userEmail) {
     console.error(error);
   }
 }
+
+export async function createNewUser(email, fname, lname, pass, dob, gender, home) {
+  const newUser = { email, fname, lname, pass, dob, gender, home };
+  try {
+    await fetch('http://localhost:8080/users', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newUser)
+    });
+  } catch (error) {
+    console.error(error);
+  }
+}
