@@ -3,13 +3,13 @@ import { fetchUserByUid } from '../api';
 import Auth from './Auth';
 import Navbar from './Navbar';
 
-function Home() {
+function Profile() {
     return (
         <>
             <Navbar/>
-            <h1> Home </h1>
+            <h1> Profile </h1>
         </>
     );
 }
 
-export default Auth(Home);
+export default Auth(Profile);

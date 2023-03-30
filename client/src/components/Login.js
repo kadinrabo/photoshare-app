@@ -47,7 +47,7 @@ function Login() {
                 </label>
                 <br />
                 <label> Password:
-                    <input type="pass" value={pass} onChange={(e) => setPassword(e.target.value)} />
+                    <input type="pass" value={pass} onChange={(e) => setPass(e.target.value)} />
                 </label>
                 <br />
                 <button type="submit">Sign In</button>
