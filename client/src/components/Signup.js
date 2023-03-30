@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { createNewUser, fetchUserByEmail } from '../api';
 
+function isValidDate(str) {
+    const dobRegex = /^(-?\d{1,6})-((0[1-9]|1[0-2])|-0[1-9]|-1[0-2])-((0[1-9]|[12][0-9]|3[01])|-0[1-9]|-[12][0-9]|-3[01])$/;
+    if (!dobRegex.test(str)) {
+        return false;
+    }
+    const date = new Date(str);
+    return date.toString() !== "Invalid Date";
+}
+
 function Signup() {
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
@@ -13,14 +22,11 @@ function Signup() {
     const [home, setHome] = useState('');
     const [formSubmitted, setFormSubmitted] = useState(false);
     const history = useHistory();
-    const regex = /^\d{4}-\d{2}-\d{2}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
+    
     useEffect(() => {
         async function createUserData() {
-            // Create the user
             await createNewUser(email, fname, lname, pass, dob, gender, home);
-            // Fetch the user
             const fetchedUser = await fetchUserByEmail(email);
             setUser(fetchedUser);
         }
@@ -31,7 +37,7 @@ function Signup() {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (fname !== '' && lname !== '' && dob !== '' && email !== '' && pass !== '' && regex.test(dob) && emailRegex.test(email)) {
+        if (fname !== '' && lname !== '' && dob !== '' && email !== '' && pass !== '' && isValidDate(dob) && emailRegex.test(email)) {
             setFormSubmitted(true);
         }
     };
