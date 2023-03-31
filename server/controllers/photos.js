@@ -10,6 +10,41 @@ exports.getAllPhotos = (req, res, next) => {
 	});
 };
 
+exports.createNewPhoto = (req, res, next) => {
+	const { aid, pdata, caption } = req.body;
+	client.query(
+		"INSERT INTO phototable (aid, pdata, caption) VALUES ($1, $2, $3)",
+		[aid, pdata, caption],
+		(err, result) => {
+			if (err) {
+				return next(err);
+			}
+			client.query(
+				"SELECT pid FROM phototable WHERE pdata = $1",
+				[pdata],
+				(err, result) => {
+					if (err) {
+						return next(err);
+					}
+					const pid = result.rows[0].pid;
+					client.query(
+						"INSERT INTO contains (aid, pid) VALUES ($1, $2)",
+						[aid, pid],
+						(err) => {
+							if (err) {
+								return next(err);
+							}
+						}
+					);
+				}
+			);
+			res.status(201).json({
+				message: "Photo created and contains table updated successfully.",
+			});
+		}
+	);
+};
+
 // Handler for http://localhost:8080/photos/tag
 exports.getPhotosByTag = (req, res, next) => {
 	const tag = req.params.tag;

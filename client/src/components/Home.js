@@ -3,6 +3,7 @@ import Auth from "./Auth";
 import Navbar from "./Navbar";
 import SearchForFriends from "./SearchForFriends";
 import SearchForTags from "./SearchForTags";
+import Popup from "./Popup";
 
 function Home() {
 	return (

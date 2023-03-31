@@ -10,12 +10,46 @@ exports.getAllUsers = (req, res, next) => {
 	});
 };
 
+exports.getUserByPid = (req, res, next) => {
+	const pid = req.params.pid;
+	const query = `
+		SELECT * FROM usertable WHERE uid IN 
+			(SELECT uid FROM albumtable WHERE aid IN (
+				SELECT aid
+				FROM contains
+				WHERE pid = $1));
+      `;
+	client.query(query, [pid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
+exports.getUserHasLikeByPid = (req, res, next) => {
+	const pid = req.params.haslikepid;
+	const query = `
+		SELECT * FROM usertable WHERE uid IN (
+			SELECT uid
+			FROM haslike
+			WHERE pid = $1
+		);
+      `;
+	client.query(query, [pid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
 exports.getUsersBySearch = (req, res, next) => {
 	const search = req.params.search;
 	if (/^\d+$/.test(search)) {
 		const query = `
     SELECT *
-        FROM UserTable
+        FROM usertable
         WHERE uid = $1;
       `;
 		client.query(query, [search], (err, result) => {
@@ -29,7 +63,7 @@ exports.getUsersBySearch = (req, res, next) => {
 	else if (/^\S+@\S+\.\S+$/.test(search)) {
 		const query = `
         SELECT *
-        FROM UserTable
+        FROM usertable
         WHERE email = $1;
       `;
 		client.query(query, [search], (err, result) => {
@@ -43,7 +77,7 @@ exports.getUsersBySearch = (req, res, next) => {
 	else {
 		const query = `
         SELECT *
-        FROM UserTable
+        FROM usertable
         WHERE fname ILIKE $1 OR lname ILIKE $1;
       `;
 		client.query(query, [`%${search}%`], (err, result) => {

@@ -44,7 +44,7 @@ DROP TABLE IF EXISTS PhotoTable CASCADE;
 CREATE TABLE PhotoTable (
     pid serial PRIMARY KEY NOT NULL UNIQUE,
     aid integer NOT NULL REFERENCES AlbumTable(aid) ON DELETE CASCADE CHECK(aid >= 1),
-    pdata varchar(50) NOT NULL UNIQUE,
+    pdata varchar(400) NOT NULL,
     caption varchar(1000) DEFAULT NULL
 );
 
@@ -179,16 +179,16 @@ SELECT * FROM AlbumTable;
 
 TRUNCATE TABLE PhotoTable CASCADE;
 
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic1', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic2', 'Sunny day at the beach');
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic3', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic4', 'Family picnic in the park');
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic5', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic6', 'Hiking in the mountains');
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic7', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic8', 'At the concert with friends');
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic9', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firestore.com/pic10', 'Summer road trip');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Sunny day at the beach');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Family picnic in the park');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Hiking in the mountains');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'At the concert with friends');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Summer road trip');
 
 SELECT * FROM PhotoTable;
 

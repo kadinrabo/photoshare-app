@@ -3,6 +3,7 @@ const router = require("express").Router();
 
 // /photos
 router.get("/", controller.getAllPhotos);
+router.post("/", controller.createNewPhoto);
 router.get("/:tag", controller.getPhotosByTag);
 
 module.exports = router;

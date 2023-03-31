@@ -18,6 +18,15 @@ app.use("/users", require("./routes/users"));
 // Set a route for http://localhost:8080/photos
 app.use("/photos", require("./routes/photos"));
 
+// Set a route for http://localhost:8080/albums
+app.use("/albums", require("./routes/albums"));
+
+// Set a route for http://localhost:8080/comments
+app.use("/comments", require("./routes/comments"));
+
+// Set a route for http://localhost:8080/tags
+app.use("/tags", require("./routes/tags"));
+
 // Just show a message for http://localhost:8080/
 app.get("/", (req, res, next) => {
 	res.send("Api running 👍");

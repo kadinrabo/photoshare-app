@@ -1,21 +1,44 @@
 import { useState, useEffect } from "react";
 import Popup from "./Popup";
-import { fetchPhotosByTag } from "../api";
+import { fetchPhotosByTag, fetchUserByPid } from "../api";
 import Photo from "./Photo";
 
 function SearchResult({ photo, onItemClick }) {
+	const [user, setUser] = useState(null);
+
+	useEffect(() => {
+		async function fetchUser() {
+			const fetchedUser = await fetchUserByPid(photo.pid);
+			setUser(fetchedUser);
+		}
+		fetchUser();
+	}, []);
+
 	return (
 		<div
 			onClick={() => onItemClick(photo)}
 			style={{
-				padding: "2px",
+				padding: "0px",
 				cursor: "pointer",
 				transition: "background-color 0.2s ease-in-out",
-				borderRadius: "5px",
-				margin: "5px 0",
+				borderRadius: "1px",
+				margin: "1px 0",
 			}}
 		>
-			{photo.pid} {photo.aid}
+			<h4 style={{ display: "inline-block", marginRight: "10px" }}>
+				{photo.caption ? photo.caption : "Photo"}
+			</h4>
+			{user && (
+				<p
+					style={{
+						display: "inline-block",
+						fontSize: "14px",
+						color: "#999",
+					}}
+				>
+					By {user.fname} {user.lname}
+				</p>
+			)}
 		</div>
 	);
 }
@@ -47,12 +70,14 @@ function SearchForTags() {
 
 	const handleClosePopup = () => {
 		setShowPopup(false);
+		setPhoto(null);
 	};
 
 	useEffect(() => {
 		const fetchResults = async () => {
 			if (
 				query.trim() === "" ||
+				query.indexOf("#") !== -1 ||
 				!(query.split(",").length === 1 || query.split(",").length > 1)
 			) {
 				setPhotos([]);
@@ -77,7 +102,7 @@ function SearchForTags() {
 				backgroundColor: "white",
 			}}
 		>
-			<p style={{ padding: "0px" }}>Search for photos by tag</p>
+			<p style={{ padding: "0px" }}>Search by tag (no #)</p>
 			<input
 				type="text"
 				value={query}
@@ -91,10 +116,7 @@ function SearchForTags() {
 			/>
 			<SearchResults photos={photos} onItemClick={handleResultClick} />
 			<Popup onClose={handleClosePopup} isOpen={showPopup}>
-				{photo && (
-					// Show the other photo information here with photo object
-					<Photo photo={photo} />
-				)}
+				{photo && <Photo photo={photo} />}
 			</Popup>
 		</div>
 	);
