@@ -15,6 +15,9 @@ app.use(bodyparser.urlencoded({ extended: false }));
 // Set a route for http://localhost:8080/users
 app.use("/users", require("./routes/users"));
 
+// Set a route for http://localhost:8080/photos
+app.use("/photos", require("./routes/photos"));
+
 // Just show a message for http://localhost:8080/
 app.get("/", (req, res, next) => {
 	res.send("Api running 👍");

@@ -13,6 +13,8 @@ function SearchResult({ user, onItemClick }) {
 				padding: "2px",
 				cursor: "pointer",
 				transition: "background-color 0.2s ease-in-out",
+				borderRadius: "5px",
+				margin: "5px 0",
 			}}
 		>
 			{fname} {lname}
@@ -22,7 +24,7 @@ function SearchResult({ user, onItemClick }) {
 
 function SearchResults({ results, onItemClick }) {
 	return (
-		<div>
+		<div style={{ maxHeight: "180px", overflowY: "auto" }}>
 			{results.map((result) => (
 				<SearchResult
 					key={result.uid}
@@ -34,7 +36,7 @@ function SearchResults({ results, onItemClick }) {
 	);
 }
 
-function Searcher() {
+function SearchForFriends() {
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState([]);
 	const [showPopup, setShowPopup] = useState(false);
@@ -85,7 +87,12 @@ function Searcher() {
 				type="text"
 				value={query}
 				onChange={handleQueryChange}
-				style={{}}
+				style={{
+					padding: "5px",
+					border: "1px solid #ddd",
+					borderRadius: "5px",
+					marginBottom: "10px",
+				}}
 			/>
 			<SearchResults results={results} onItemClick={handleResultClick} />
 			<Popup onClose={handleClosePopup} isOpen={showPopup}>
@@ -98,4 +105,4 @@ function Searcher() {
 	);
 }
 
-export default Searcher;
+export default SearchForFriends;
