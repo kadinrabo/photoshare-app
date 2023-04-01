@@ -101,14 +101,22 @@ function Photo({ photo }) {
 						<Comments photo={photo} />
 					</div>
 				</div>
-				{user && user.uid !== localStorage.getItem("uid") && (
+				{user && user.uid == localStorage.getItem("uid") && (
 					<div style={{ display: "flex", alignItems: "center" }}>
 						<div>
 							<button onClick={handleAddTag}> Add </button>
 							<input
 								type="text"
 								placeholder="Add tag"
-								style={{ marginRight: "3px", marginLeft: "5px" }}
+								style={{
+									padding: "5px",
+									border: "1px solid #ddd",
+									borderRadius: "5px",
+									marginBottom: "10px",
+									maxWidth: "90%",
+									marginRight: "3px",
+									marginLeft: "5px",
+								}}
 								value={newTag}
 								onChange={handleInputChange}
 							/>
@@ -128,12 +136,18 @@ function Photo({ photo }) {
 						</p>
 					)}
 				</div>
-				<button
-					style={{ backgroundColor: "red", color: "white", marginRight: "5px" }}
-					onClick={handleDeletePhoto}
-				>
-					Delete photo
-				</button>
+				{user && user.uid == localStorage.getItem("uid") && (
+					<button
+						style={{
+							backgroundColor: "red",
+							color: "white",
+							marginRight: "5px",
+						}}
+						onClick={handleDeletePhoto}
+					>
+						Delete photo
+					</button>
+				)}
 			</div>
 		</>
 	);

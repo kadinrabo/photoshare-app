@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchLikersByPid } from "../api";
+import { fetchAddLikeByPid, fetchLikersByPid } from "../api";
 
 function Likes({ photo }) {
 	const [users, setUsers] = useState([]);
@@ -10,7 +10,17 @@ function Likes({ photo }) {
 			setUsers(fetchedUser.users);
 		}
 		fetchUsers();
-	}, [photo.pid]);
+	}, [photo.pid, users]);
+
+	const handleAdd = async () => {
+		const likedAlready = users.find(
+			(user) => user.uid == localStorage.getItem("uid")
+		);
+		if (!likedAlready) {
+			await fetchAddLikeByPid(photo.pid, localStorage.getItem("uid"));
+			return;
+		}
+	};
 
 	return (
 		<>
@@ -28,6 +38,20 @@ function Likes({ photo }) {
 				<h3 style={{ textAlign: "left" }}>
 					{users.length} {users.length < 2 ? "Like" : "Likes"}
 				</h3>
+				<div style={{ marginBottom: "10px" }}>
+					<button
+						style={{
+							padding: "5px",
+							border: "1px solid #ddd",
+							borderRadius: "5px",
+							marginBottom: "10px",
+							maxWidth: "90%",
+						}}
+						onClick={handleAdd}
+					>
+						Add like
+					</button>
+				</div>
 				<ul style={{ listStyle: "none", padding: 0 }}>
 					{users.map((user) => (
 						<li key={user.uid}>

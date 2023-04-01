@@ -27,6 +27,9 @@ app.use("/comments", require("./routes/comments"));
 // Set a route for http://localhost:8080/tags
 app.use("/tags", require("./routes/tags"));
 
+// Set a route for http://localhost:8080/likes
+app.use("/likes", require("./routes/likes"));
+
 // Just show a message for http://localhost:8080/
 app.get("/", (req, res, next) => {
 	res.send("Api running 👍");
