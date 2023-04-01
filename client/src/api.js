@@ -86,14 +86,42 @@ export async function createNewPhoto(aid, pdata, caption) {
 }
 
 export async function fetchAddComment(uid, ctext, pid) {
-	const newPhoto = { uid, ctext, pid };
+	const newComment = { uid, ctext, pid };
 	try {
 		await fetch(`http://localhost:8080/comments/pid=${pid}`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
 			},
-			body: JSON.stringify(newPhoto),
+			body: JSON.stringify(newComment),
+		});
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+export async function fetchDeletePhotoByPid(pid) {
+	try {
+		await fetch(`http://localhost:8080/photos/pid=${pid}`, {
+			method: "DELETE",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		});
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+export async function fetchAddTag(tag, pid) {
+	const newTag = { tag };
+	try {
+		await fetch(`http://localhost:8080/tags/pid=${pid}`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(newTag),
 		});
 	} catch (error) {
 		console.error(error);

@@ -21,10 +21,8 @@ DROP TABLE IF EXISTS FriendTable CASCADE;
 -- CHECK(uid >= 1) might be redunant, just really
 -- making sure we are non-negative.
 CREATE TABLE FriendTable (
-    uid integer NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(uid >= 1),
-    fid integer NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(fid >= 1),
-    dof timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (uid, fid)
+    fid integer PRIMARY KEY NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(fid >= 1),
+    dof timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 DROP TABLE IF EXISTS AlbumTable CASCADE;
@@ -69,8 +67,8 @@ DROP TABLE IF EXISTS LikeTable CASCADE;
 
 -- lid = like ID
 CREATE TABLE LikeTable (
-    uid integer PRIMARY KEY NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(uid >= 1),
-    pid integer NOT NULL REFERENCES PhotoTable(pid) ON DELETE CASCADE CHECK(pid >= 1)
+    lid serial PRIMARY KEY NOT NULL UNIQUE,
+    uid integer NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(uid >= 1)
 );
 
 -- ########################################################################
@@ -107,9 +105,9 @@ DROP TABLE IF EXISTS HasLike CASCADE;
 
 -- Photo has like (uid uniquely identifies the like)
 CREATE TABLE HasLike (
-    uid integer NOT NULL REFERENCES LikeTable(uid) ON DELETE CASCADE CHECK(uid >= 1),
     pid integer NOT NULL REFERENCES PhotoTable(pid) ON DELETE CASCADE CHECK(pid >= 1),
-    PRIMARY KEY (uid, pid)
+    lid integer NOT NULL REFERENCES LikeTable(lid) ON DELETE CASCADE CHECK(lid >= 1),
+    PRIMARY KEY (pid, lid)
 );
 
 DROP TABLE IF EXISTS HasTag CASCADE;
@@ -145,67 +143,57 @@ INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('ch
 INSERT INTO UserTable (email, fname, lname, pass, dob) VALUES ('samuel.clark@example.com', 'Samuel', 'Clark', 'password', '1999-09-09');
 INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('linda.smith@example.com', 'Linda', 'Smith', 'password', '1997-10-10', NULL, 'San Francisco');
 
-SELECT * FROM UserTable;
-
 TRUNCATE TABLE FriendTable CASCADE;
 
-INSERT INTO FriendTable (uid, fid) VALUES (1, 2);
-INSERT INTO FriendTable (uid, fid) VALUES (1, 3);
-INSERT INTO FriendTable (uid, fid) VALUES (1, 4);
-INSERT INTO FriendTable (uid, fid) VALUES (2, 1);
-INSERT INTO FriendTable (uid, fid) VALUES (2, 3);
-INSERT INTO FriendTable (uid, fid) VALUES (3, 1);
-INSERT INTO FriendTable (uid, fid) VALUES (3, 2);
-INSERT INTO FriendTable (uid, fid) VALUES (4, 1);
-INSERT INTO FriendTable (uid, fid) VALUES (5, 2);
-INSERT INTO FriendTable (uid, fid) VALUES (6, 7);
-
-SELECT * FROM FriendTable;
+INSERT INTO FriendTable (fid) VALUES (1);
+INSERT INTO FriendTable (fid) VALUES (2);
+INSERT INTO FriendTable (fid) VALUES (3);
+INSERT INTO FriendTable (fid) VALUES (4);
+INSERT INTO FriendTable (fid) VALUES (5);
+INSERT INTO FriendTable (fid) VALUES (6);
+INSERT INTO FriendTable (fid) VALUES (7);
+INSERT INTO FriendTable (fid) VALUES (8);
+INSERT INTO FriendTable (fid) VALUES (9);
+INSERT INTO FriendTable (fid) VALUES (10);
 
 TRUNCATE TABLE AlbumTable CASCADE;
 
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Vacation Memories');
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Family Reunion');
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Graduation Party');
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Halloween 2022');
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Road Trip');
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'New Year Celebrations');
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Baby Shower');
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Wedding Anniversary');
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Summer Picnic');
-INSERT INTO AlbumTable (uid, aname) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Christmas Party');
-
-SELECT * FROM AlbumTable;
+INSERT INTO AlbumTable (uid, aname) VALUES (1, 'Vacation Memories');
+INSERT INTO AlbumTable (uid, aname) VALUES (2, 'Family Reunion');
+INSERT INTO AlbumTable (uid, aname) VALUES (3, 'Graduation Party');
+INSERT INTO AlbumTable (uid, aname) VALUES (4, 'Halloween 2022');
+INSERT INTO AlbumTable (uid, aname) VALUES (5, 'Road Trip');
+INSERT INTO AlbumTable (uid, aname) VALUES (6, 'New Year Celebrations');
+INSERT INTO AlbumTable (uid, aname) VALUES (7, 'Baby Shower');
+INSERT INTO AlbumTable (uid, aname) VALUES (8, 'Wedding Anniversary');
+INSERT INTO AlbumTable (uid, aname) VALUES (9, 'Summer Picnic');
+INSERT INTO AlbumTable (uid, aname) VALUES (10, 'Christmas Party');
 
 TRUNCATE TABLE PhotoTable CASCADE;
 
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Sunny day at the beach');
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Family picnic in the park');
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Hiking in the mountains');
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'At the concert with friends');
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES ((SELECT aid FROM AlbumTable ORDER BY RANDOM() LIMIT 1), 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Summer road trip');
-
-SELECT * FROM PhotoTable;
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (1, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (2, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Sunny day at the beach');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (3, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (4, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Family picnic in the park');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (5, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (6, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Hiking in the mountains');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (7, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (8, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'At the concert with friends');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (9, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (10, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Summer road trip');
 
 TRUNCATE TABLE CommentTable CASCADE;
 
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Great shot!');
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Lovely colors!');
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Wow, stunning!');
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Beautiful scenery');
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'So cute!');
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Amazing view');
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Nice shot!');
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Adorable!');
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'Impressive');
-INSERT INTO CommentTable (uid, ctext) VALUES ((SELECT uid FROM UserTable ORDER BY RANDOM() LIMIT 1), 'So beautiful!');
-
-SELECT * FROM CommentTable;
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'Great shot!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Lovely colors!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Wow, stunning!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Beautiful scenery');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'So cute!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Amazing view');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Nice shot!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Adorable!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Impressive');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'So beautiful!');
 
 TRUNCATE TABLE TagTable CASCADE;
 
@@ -220,22 +208,18 @@ INSERT INTO TagTable (tag) VALUES ('#fitnessmotivation');
 INSERT INTO TagTable (tag) VALUES ('#photography');
 INSERT INTO TagTable (tag) VALUES ('#fashionista');
 
-SELECT * FROM TagTable;
-
 TRUNCATE TABLE LikeTable CASCADE;
 
-INSERT INTO LikeTable (uid, pid) VALUES (1, 2);
-INSERT INTO LikeTable (uid, pid) VALUES (3, 1);
-INSERT INTO LikeTable (uid, pid) VALUES (5, 4);
-INSERT INTO LikeTable (uid, pid) VALUES (7, 3);
-INSERT INTO LikeTable (uid, pid) VALUES (9, 6);
-INSERT INTO LikeTable (uid, pid) VALUES (2, 8);
-INSERT INTO LikeTable (uid, pid) VALUES (4, 7);
-INSERT INTO LikeTable (uid, pid) VALUES (6, 5);
-INSERT INTO LikeTable (uid, pid) VALUES (8, 10);
-INSERT INTO LikeTable (uid, pid) VALUES (10, 9);
-
-SELECT * FROM LikeTable;
+INSERT INTO LikeTable (uid) VALUES (1);
+INSERT INTO LikeTable (uid) VALUES (2);
+INSERT INTO LikeTable (uid) VALUES (3);
+INSERT INTO LikeTable (uid) VALUES (4);
+INSERT INTO LikeTable (uid) VALUES (5);
+INSERT INTO LikeTable (uid) VALUES (6);
+INSERT INTO LikeTable (uid) VALUES (7);
+INSERT INTO LikeTable (uid) VALUES (8);
+INSERT INTO LikeTable (uid) VALUES (9);
+INSERT INTO LikeTable (uid) VALUES (10);
 
 -- ########################################################################
 -- Relationships
@@ -243,91 +227,89 @@ SELECT * FROM LikeTable;
 -- User has friend
 TRUNCATE TABLE HasFriend CASCADE;
 
-INSERT INTO HasFriend (uid, fid) VALUES (1, 2);
-INSERT INTO HasFriend (uid, fid) VALUES (1, 3);
-INSERT INTO HasFriend (uid, fid) VALUES (1, 4);
-INSERT INTO HasFriend (uid, fid) VALUES (2, 1);
-INSERT INTO HasFriend (uid, fid) VALUES (2, 3);
-INSERT INTO HasFriend (uid, fid) VALUES (3, 1);
-INSERT INTO HasFriend (uid, fid) VALUES (3, 2);
-INSERT INTO HasFriend (uid, fid) VALUES (4, 1);
+INSERT INTO HasFriend (uid, fid) VALUES (1, 10);
+INSERT INTO HasFriend (uid, fid) VALUES (1, 9);
+INSERT INTO HasFriend (uid, fid) VALUES (2, 8);
+INSERT INTO HasFriend (uid, fid) VALUES (2, 7);
+INSERT INTO HasFriend (uid, fid) VALUES (3, 6);
+INSERT INTO HasFriend (uid, fid) VALUES (3, 5);
+INSERT INTO HasFriend (uid, fid) VALUES (4, 4);
+INSERT INTO HasFriend (uid, fid) VALUES (4, 3);
 INSERT INTO HasFriend (uid, fid) VALUES (5, 2);
-INSERT INTO HasFriend (uid, fid) VALUES (6, 7);
-
-SELECT * FROM HasFriend;
+INSERT INTO HasFriend (uid, fid) VALUES (5, 1);
+INSERT INTO HasFriend (uid, fid) VALUES (6, 2);
+INSERT INTO HasFriend (uid, fid) VALUES (6, 3);
+INSERT INTO HasFriend (uid, fid) VALUES (7, 4);
+INSERT INTO HasFriend (uid, fid) VALUES (7, 5);
+INSERT INTO HasFriend (uid, fid) VALUES (8, 6);
+INSERT INTO HasFriend (uid, fid) VALUES (8, 7);
+INSERT INTO HasFriend (uid, fid) VALUES (9, 8);
+INSERT INTO HasFriend (uid, fid) VALUES (9, 9);
+INSERT INTO HasFriend (uid, fid) VALUES (10, 10);
+INSERT INTO HasFriend (uid, fid) VALUES (10, 1);
 
 -- Photo has album
 TRUNCATE TABLE HasAlbum CASCADE;
 
 INSERT INTO HasAlbum (uid, aid) VALUES (1, 1);
-INSERT INTO HasAlbum (uid, aid) VALUES (6, 2);
-INSERT INTO HasAlbum (uid, aid) VALUES (8, 3);
-INSERT INTO HasAlbum (uid, aid) VALUES (2, 4);
-INSERT INTO HasAlbum (uid, aid) VALUES (9, 5);
-INSERT INTO HasAlbum (uid, aid) VALUES (1, 6);
-INSERT INTO HasAlbum (uid, aid) VALUES (4, 7);
-INSERT INTO HasAlbum (uid, aid) VALUES (3, 8);
-INSERT INTO HasAlbum (uid, aid) VALUES (5, 9);
-INSERT INTO HasAlbum (uid, aid) VALUES (7, 10);
-
-SELECT * FROM HasAlbum;
+INSERT INTO HasAlbum (uid, aid) VALUES (2, 2);
+INSERT INTO HasAlbum (uid, aid) VALUES (3, 3);
+INSERT INTO HasAlbum (uid, aid) VALUES (4, 4);
+INSERT INTO HasAlbum (uid, aid) VALUES (5, 5);
+INSERT INTO HasAlbum (uid, aid) VALUES (6, 6);
+INSERT INTO HasAlbum (uid, aid) VALUES (7, 7);
+INSERT INTO HasAlbum (uid, aid) VALUES (8, 8);
+INSERT INTO HasAlbum (uid, aid) VALUES (9, 9);
+INSERT INTO HasAlbum (uid, aid) VALUES (10, 10);
 
 TRUNCATE TABLE Contains CASCADE;
 
-INSERT INTO Contains (aid, pid) VALUES (5, 1);
-INSERT INTO Contains (aid, pid) VALUES (6, 2);
-INSERT INTO Contains (aid, pid) VALUES (4, 3);
-INSERT INTO Contains (aid, pid) VALUES (3, 4);
-INSERT INTO Contains (aid, pid) VALUES (1, 5);
-INSERT INTO Contains (aid, pid) VALUES (10, 6);
-INSERT INTO Contains (aid, pid) VALUES (10, 7);
-INSERT INTO Contains (aid, pid) VALUES (7, 8);
-INSERT INTO Contains (aid, pid) VALUES (4, 9);
-INSERT INTO Contains (aid, pid) VALUES (2, 10);
-
-SELECT * FROM Contains;
+INSERT INTO Contains (aid, pid) VALUES (1, 1);
+INSERT INTO Contains (aid, pid) VALUES (2, 2);
+INSERT INTO Contains (aid, pid) VALUES (3, 3);
+INSERT INTO Contains (aid, pid) VALUES (4, 4);
+INSERT INTO Contains (aid, pid) VALUES (5, 5);
+INSERT INTO Contains (aid, pid) VALUES (6, 6);
+INSERT INTO Contains (aid, pid) VALUES (7, 7);
+INSERT INTO Contains (aid, pid) VALUES (8, 8);
+INSERT INTO Contains (aid, pid) VALUES (9, 9);
+INSERT INTO Contains (aid, pid) VALUES (10, 10);
 
 TRUNCATE TABLE HasLike CASCADE;
 
-INSERT INTO HasLike (uid, pid) VALUES (2, 1);
-INSERT INTO HasLike (uid, pid) VALUES (1, 3);
-INSERT INTO HasLike (uid, pid) VALUES (4, 5);
-INSERT INTO HasLike (uid, pid) VALUES (3, 7);
-INSERT INTO HasLike (uid, pid) VALUES (6, 9);
-INSERT INTO HasLike (uid, pid) VALUES (8, 2);
-INSERT INTO HasLike (uid, pid) VALUES (7, 4);
-INSERT INTO HasLike (uid, pid) VALUES (5, 6);
-INSERT INTO HasLike (uid, pid) VALUES (10, 8);
-INSERT INTO HasLike (uid, pid) VALUES (9, 10);
-
-SELECT * FROM HasLike;
+INSERT INTO HasLike (pid, lid) VALUES (1, 1);
+INSERT INTO HasLike (pid, lid) VALUES (1, 2);
+INSERT INTO HasLike (pid, lid) VALUES (1, 3);
+INSERT INTO HasLike (pid, lid) VALUES (1, 4);
+INSERT INTO HasLike (pid, lid) VALUES (2, 5);
+INSERT INTO HasLike (pid, lid) VALUES (3, 6);
+INSERT INTO HasLike (pid, lid) VALUES (4, 7);
+INSERT INTO HasLike (pid, lid) VALUES (5, 8);
+INSERT INTO HasLike (pid, lid) VALUES (6, 9);
+INSERT INTO HasLike (pid, lid) VALUES (7, 10);
 
 TRUNCATE TABLE HasTag CASCADE;
 
+INSERT INTO HasTag (pid, tid) VALUES (1, 1);
 INSERT INTO HasTag (pid, tid) VALUES (1, 2);
-INSERT INTO HasTag (pid, tid) VALUES (3, 1);
-INSERT INTO HasTag (pid, tid) VALUES (5, 4);
-INSERT INTO HasTag (pid, tid) VALUES (7, 3);
-INSERT INTO HasTag (pid, tid) VALUES (9, 6);
-INSERT INTO HasTag (pid, tid) VALUES (2, 8);
+INSERT INTO HasTag (pid, tid) VALUES (1, 3);
+INSERT INTO HasTag (pid, tid) VALUES (1, 4);
+INSERT INTO HasTag (pid, tid) VALUES (2, 5);
+INSERT INTO HasTag (pid, tid) VALUES (3, 6);
 INSERT INTO HasTag (pid, tid) VALUES (4, 7);
-INSERT INTO HasTag (pid, tid) VALUES (6, 5);
-INSERT INTO HasTag (pid, tid) VALUES (8, 10);
-INSERT INTO HasTag (pid, tid) VALUES (10, 9);
-
-SELECT * FROM HasTag;
+INSERT INTO HasTag (pid, tid) VALUES (5, 8);
+INSERT INTO HasTag (pid, tid) VALUES (6, 9);
+INSERT INTO HasTag (pid, tid) VALUES (7, 10);
 
 TRUNCATE TABLE HasComment CASCADE;
 
+INSERT INTO HasComment (pid, cid) VALUES (1, 1);
 INSERT INTO HasComment (pid, cid) VALUES (1, 2);
-INSERT INTO HasComment (pid, cid) VALUES (3, 1);
-INSERT INTO HasComment (pid, cid) VALUES (5, 4);
-INSERT INTO HasComment (pid, cid) VALUES (7, 3);
-INSERT INTO HasComment (pid, cid) VALUES (9, 6);
-INSERT INTO HasComment (pid, cid) VALUES (2, 8);
+INSERT INTO HasComment (pid, cid) VALUES (1, 3);
+INSERT INTO HasComment (pid, cid) VALUES (1, 4);
+INSERT INTO HasComment (pid, cid) VALUES (2, 5);
+INSERT INTO HasComment (pid, cid) VALUES (3, 6);
 INSERT INTO HasComment (pid, cid) VALUES (4, 7);
-INSERT INTO HasComment (pid, cid) VALUES (6, 5);
-INSERT INTO HasComment (pid, cid) VALUES (8, 10);
-INSERT INTO HasComment (pid, cid) VALUES (10, 9);
-
-SELECT * FROM HasComment;
+INSERT INTO HasComment (pid, cid) VALUES (5, 8);
+INSERT INTO HasComment (pid, cid) VALUES (6, 9);
+INSERT INTO HasComment (pid, cid) VALUES (7, 10);

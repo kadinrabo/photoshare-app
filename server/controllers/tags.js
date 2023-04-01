@@ -24,3 +24,30 @@ exports.getTagsByPid = (req, res, next) => {
 		res.json(result.rows);
 	});
 };
+
+exports.addTag = (req, res, next) => {
+	const { tag } = req.body;
+	const pid = req.params.pid;
+	client.query(
+		"INSERT INTO tagtable (tag) VALUES ($1) RETURNING tid",
+		[tag],
+		(err, result) => {
+			if (err) {
+				return next(err);
+			}
+			const newTid = result.rows[0].tid;
+			client.query(
+				"INSERT INTO hastag (pid, tid) VALUES ($1, $2)",
+				[pid, newTid],
+				(err) => {
+					if (err) {
+						return next(err);
+					}
+				}
+			);
+			res.status(201).json({
+				message: "Tag added and hastag table updated successfully!",
+			});
+		}
+	);
+};

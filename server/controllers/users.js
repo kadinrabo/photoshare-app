@@ -32,8 +32,12 @@ exports.getUserHasLikeByPid = (req, res, next) => {
 	const query = `
 		SELECT * FROM usertable WHERE uid IN (
 			SELECT uid
-			FROM haslike
-			WHERE pid = $1
+			FROM liketable
+			WHERE lid IN (
+				SELECT lid
+				FROM haslike
+				WHERE pid = $1
+			)
 		);
       `;
 	client.query(query, [pid], (err, result) => {

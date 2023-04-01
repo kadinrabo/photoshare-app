@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { fetchUserByPid, fetchTagsByPid } from "../api";
+import {
+	fetchUserByPid,
+	fetchTagsByPid,
+	fetchAddTag,
+	fetchDeletePhotoByPid,
+} from "../api";
 import Likes from "./Likes";
 import Comments from "./Comments";
 
@@ -7,6 +12,10 @@ function Photo({ photo }) {
 	const [user, setUser] = useState(null);
 	const [tags, setTags] = useState(null);
 	const [newTag, setNewTag] = useState("");
+
+	const handleInputChange = (event) => {
+		setNewTag(event.target.value);
+	};
 
 	useEffect(() => {
 		async function fetchUser() {
@@ -25,11 +34,19 @@ function Photo({ photo }) {
 	}, [photo.pid]);
 
 	const handleAddTag = async () => {
-		if (!newTag) return;
-		await addTag(photo.pid, newTag);
+		if (!newTag || newTag.trim() === "" || !/^\s*(?!.*#)\S+\s*$/.test(newTag)) {
+			alert("Invalid tag. no spaces and no #");
+			return;
+		}
+		await fetchAddTag("#" + newTag.trim(), photo.pid);
 		const fetchedTags = await fetchTagsByPid(photo.pid);
 		setTags(fetchedTags.tags);
 		setNewTag("");
+	};
+
+	const handleDeletePhoto = async () => {
+		await fetchDeletePhotoByPid(photo.pid);
+		window.location.reload();
 	};
 
 	return (
@@ -84,14 +101,16 @@ function Photo({ photo }) {
 						<Comments photo={photo} />
 					</div>
 				</div>
-				{user && user.uid === localStorage.getItem("uid") && (
+				{user && user.uid !== localStorage.getItem("uid") && (
 					<div style={{ display: "flex", alignItems: "center" }}>
 						<div>
-							<button> Add </button>
+							<button onClick={handleAddTag}> Add </button>
 							<input
 								type="text"
 								placeholder="Add tag"
 								style={{ marginRight: "3px", marginLeft: "5px" }}
+								value={newTag}
+								onChange={handleInputChange}
 							/>
 						</div>
 					</div>
@@ -103,12 +122,18 @@ function Photo({ photo }) {
 							{tags.map((tag, index) => (
 								<span key={index}>
 									{tag.tag}
-									{index !== tags.length - 1 && ", "}
+									{index !== tags.length - 1 && ",  "}
 								</span>
 							))}
 						</p>
 					)}
 				</div>
+				<button
+					style={{ backgroundColor: "red", color: "white", marginRight: "5px" }}
+					onClick={handleDeletePhoto}
+				>
+					Delete photo
+				</button>
 			</div>
 		</>
 	);
