@@ -70,8 +70,8 @@ export async function fetchPhotosByTag(tag) {
 	}
 }
 
-export async function createNewPhoto(pid, aid, pdata, caption) {
-	const newPhoto = { pid, aid, pdata, caption };
+export async function createNewPhoto(aid, pdata, caption) {
+	const newPhoto = { aid, pdata, caption };
 	try {
 		await fetch("http://localhost:8080/photos", {
 			method: "POST",

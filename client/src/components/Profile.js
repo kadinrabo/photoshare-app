@@ -16,11 +16,10 @@ function Profile() {
 					padding: "20px",
 				}}
 			>
-				<div style={{ flex: 1, marginRight: "20px" }}>
+				<div style={{ flex: 1 }}>
 					<UploadPhoto />
 				</div>
 			</div>
-			;
 		</>
 	);
 }

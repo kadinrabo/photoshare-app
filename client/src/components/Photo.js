@@ -6,6 +6,7 @@ import Comments from "./Comments";
 function Photo({ photo }) {
 	const [user, setUser] = useState(null);
 	const [tags, setTags] = useState(null);
+	const [newTag, setNewTag] = useState("");
 
 	useEffect(() => {
 		async function fetchUser() {
@@ -22,6 +23,14 @@ function Photo({ photo }) {
 		}
 		fetchTags();
 	}, [photo.pid]);
+
+	const handleAddTag = async () => {
+		if (!newTag) return;
+		await addTag(photo.pid, newTag);
+		const fetchedTags = await fetchTagsByPid(photo.pid);
+		setTags(fetchedTags.tags);
+		setNewTag("");
+	};
 
 	return (
 		<>
@@ -75,6 +84,18 @@ function Photo({ photo }) {
 						<Comments photo={photo} />
 					</div>
 				</div>
+				{user && user.uid === localStorage.getItem("uid") && (
+					<div style={{ display: "flex", alignItems: "center" }}>
+						<div>
+							<button> Add </button>
+							<input
+								type="text"
+								placeholder="Add tag"
+								style={{ marginRight: "3px", marginLeft: "5px" }}
+							/>
+						</div>
+					</div>
+				)}
 				<div style={{ display: "flex", alignItems: "center" }}>
 					<p style={{ marginRight: "5px" }}>Tags:</p>
 					{tags && (

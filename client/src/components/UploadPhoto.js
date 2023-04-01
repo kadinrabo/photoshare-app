@@ -1,46 +1,19 @@
-import React, { useState, useEffect } from "react";
-import storage from "../storage.js";
-const { v4: uuidv4 } = require("uuid");
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { fetchAlbumsBySearch, createNewPhoto } from "../api.js";
+import { useState, useEffect } from "react";
+import { storage } from "../../src/firebase";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { fetchAlbumsBySearch, createNewPhoto } from "../api";
 
 function UploadPhoto() {
-	const [file, setFile] = useState("");
+	const [imgUrl, setImgUrl] = useState(null);
+	const [progresspercent, setProgresspercent] = useState(0);
 	const [albumOptions, setAlbumOptions] = useState([]);
-	const [albumId, setAlbumId] = useState(null);
 	const [caption, setCaption] = useState("");
+	const { v4: uuidv4 } = require("uuid");
+	const [albumId, setAlbumId] = useState(null);
 	const [selectedAlbum, setSelectedAlbum] = useState(false);
 
-	function handleChange(event) {
-		setFile(event.target.files[0]);
-	}
 	const handleCaptionChange = (event) => {
 		setCaption(event.target.value);
-	};
-	const handleRadioChange = (event) => {
-		setAlbumId(event.target.value);
-		setSelectedAlbum(true);
-	};
-
-	const handleUpload = async () => {
-		if (!file) {
-			alert("Please upload an image first!");
-		} else if (!albumOptions) {
-			alert("Please create an album first!");
-		} else if (!selectedAlbum) {
-			alert("Please select an album to upload the photo to.");
-		} else {
-			const storageRef = ref(storage, `${file.name}-${uuidv4()}`);
-			const uploadTask = uploadBytesResumable(storageRef, file);
-			uploadTask.on(
-				() => {
-					getDownloadURL(uploadTask.snapshot.ref).then(async (url) => {
-						await createNewPhoto(albumId, url, caption);
-					});
-				},
-				(err) => console.log(err)
-			);
-		}
 	};
 
 	useEffect(() => {
@@ -53,40 +26,95 @@ function UploadPhoto() {
 		fetchResults();
 	}, []);
 
+	const handleRadioChange = (event) => {
+		setAlbumId(event.target.value);
+		setSelectedAlbum(true);
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		const file = e.target[0]?.files[0];
+		if (!file) {
+			alert("Please upload an image first!");
+			return;
+		} else if (!albumOptions || !selectedAlbum) {
+			alert("Please create and/or select an album first!");
+			return;
+		}
+		const storageRef = ref(storage, `files/${file.name}-${uuidv4()}`);
+		const uploadTask = uploadBytesResumable(storageRef, file);
+
+		uploadTask.on(
+			"state_changed",
+			(snapshot) => {
+				const progress = Math.round(
+					(snapshot.bytesTransferred / snapshot.totalBytes) * 100
+				);
+				setProgresspercent(progress);
+			},
+			(error) => {
+				alert(error);
+			},
+			() => {
+				getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+					setImgUrl(downloadURL);
+					try {
+						await createNewPhoto(albumId, downloadURL, caption);
+					} catch (error) {
+						console.log(error);
+					}
+				});
+			}
+		);
+	};
+
 	return (
 		<div
 			style={{
-				position: "fixed",
-				bottom: "47rem",
-				right: "1rem",
-				width: "300px",
-				backgroundColor: "#fff",
-				padding: "1rem",
-				boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-				borderRadius: "4px",
+				display: "inline-block",
+				boxShadow: "0 0 10px rgba(0,0,0,0.5)",
+				borderRadius: "10px",
+				padding: "20px",
 			}}
 		>
-			<button onClick={handleUpload}>Post</button>
-			<input type="file" onChange={handleChange} accept="/image/*" />
-			<div style={{ maxHeight: "150px", overflowY: "auto" }}>
-				{albumOptions.map((option) => (
-					<label key={option.aid} style={{ display: "block" }}>
-						<input
-							type="radio"
-							name="option"
-							value={option.aid}
-							onChange={handleRadioChange}
-						/>
-						{option.aname}
-					</label>
-				))}
+			<div className="App">
+				<input
+					type="text"
+					value={caption}
+					onChange={handleCaptionChange}
+					placeholder="Add a caption"
+					style={{
+						padding: "5px",
+						border: "1px solid #ddd",
+						borderRadius: "5px",
+						marginBottom: "10px",
+						maxWidth: "90%",
+					}}
+				/>
+				<div style={{ maxHeight: "150px", overflowY: "auto" }}>
+					{albumOptions.map((option) => (
+						<label key={option.aid} style={{ display: "block" }}>
+							<input
+								type="radio"
+								name="option"
+								value={option.aid}
+								onChange={handleRadioChange}
+							/>
+							{option.aname}
+						</label>
+					))}
+				</div>
+				<form onSubmit={handleSubmit} className="form">
+					<input type="file" />
+					<button type="submit">Upload</button>
+				</form>
+				{!imgUrl && (
+					<div className="outerbar">
+						<div className="innerbar">{progresspercent}%</div>
+					</div>
+				)}
+				{imgUrl && <img src={imgUrl} alt="uploaded file" height={200} />}
 			</div>
-			<input
-				type="text"
-				value={caption}
-				onChange={handleCaptionChange}
-				placeholder="Add a caption"
-			/>
 		</div>
 	);
 }
