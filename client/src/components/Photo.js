@@ -38,6 +38,7 @@ function Photo({ photo }) {
 			alert("Invalid tag. no spaces and no #");
 			return;
 		}
+		// Check if duplidate tag
 		await fetchAddTag("#" + newTag.trim(), photo.pid);
 		const fetchedTags = await fetchTagsByPid(photo.pid);
 		setTags(fetchedTags.tags);
@@ -123,12 +124,21 @@ function Photo({ photo }) {
 						</div>
 					</div>
 				)}
-				<div style={{ display: "flex", alignItems: "center" }}>
-					<p style={{ marginRight: "5px" }}>Tags:</p>
+				<div
+					style={{
+						display: "flex",
+						alignItems: "center",
+						flexWrap: "wrap",
+						maxWidth: "500px",
+					}}
+				>
 					{tags && (
-						<p style={{ display: "flex" }}>
+						<p style={{ display: "flex", flexWrap: "wrap" }}>
 							{tags.map((tag, index) => (
-								<span key={index}>
+								<span
+									key={index}
+									style={{ whiteSpace: "nowrap", marginRight: "5px" }}
+								>
 									{tag.tag}
 									{index !== tags.length - 1 && ",  "}
 								</span>

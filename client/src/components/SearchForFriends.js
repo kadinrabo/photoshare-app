@@ -1,14 +1,10 @@
 import { useState, useEffect } from "react";
-import Popup from "./Popup";
+import { Link } from "react-router-dom";
 import { fetchUsersBySearch } from "../api";
-import User from "./User";
 
-function SearchResult({ user, onItemClick }) {
-	const fname = user.fname;
-	const lname = user.lname;
+function SearchResult({ user }) {
 	return (
 		<div
-			onClick={() => onItemClick(user)}
 			style={{
 				padding: "2px",
 				cursor: "pointer",
@@ -17,20 +13,21 @@ function SearchResult({ user, onItemClick }) {
 				margin: "5px 0",
 			}}
 		>
-			{fname} {lname}
+			<Link
+				to={`/user/${user.uid}`}
+				style={{ color: "#3478f6", textDecoration: "none" }}
+			>
+				{user.fname} {user.lname}
+			</Link>
 		</div>
 	);
 }
 
-function SearchResults({ results, onItemClick }) {
+function SearchResults({ results }) {
 	return (
 		<div style={{ maxHeight: "180px", overflowY: "auto" }}>
 			{results.map((result) => (
-				<SearchResult
-					key={result.uid}
-					user={result}
-					onItemClick={onItemClick}
-				/>
+				<SearchResult key={result.uid} user={result} />
 			))}
 		</div>
 	);
@@ -39,20 +36,9 @@ function SearchResults({ results, onItemClick }) {
 function SearchForFriends() {
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState([]);
-	const [showPopup, setShowPopup] = useState(false);
-	const [user, setUser] = useState(null);
 
 	const handleQueryChange = (event) => {
 		setQuery(event.target.value);
-	};
-
-	const handleResultClick = (result) => {
-		setUser(result);
-		setShowPopup(true);
-	};
-
-	const handleClosePopup = () => {
-		setShowPopup(false);
 	};
 
 	useEffect(() => {
@@ -63,7 +49,11 @@ function SearchForFriends() {
 				!/^\S+@\S+\.\S+$/.test(query.trim())
 			) {
 				const fetchedData = await fetchUsersBySearch(query);
-				setResults(fetchedData.users);
+				setResults(
+					fetchedData.users.filter(
+						(user) => user.uid != localStorage.getItem("uid")
+					)
+				);
 			} else {
 				setResults([]);
 			}
@@ -94,13 +84,7 @@ function SearchForFriends() {
 					marginBottom: "10px",
 				}}
 			/>
-			<SearchResults results={results} onItemClick={handleResultClick} />
-			<Popup onClose={handleClosePopup} isOpen={showPopup}>
-				{user && (
-					// Show the other user information here with user object
-					<User user={user} />
-				)}
-			</Popup>
+			<SearchResults results={results} />
 		</div>
 	);
 }

@@ -5,5 +5,6 @@ const router = require("express").Router();
 router.get("/", controller.getAllTags);
 router.post("/?pid=:pid", controller.addTag);
 router.get("/?pid=:pid", controller.getTagsByPid);
+router.get("/?uid=:uid", controller.getAllUniqueTagsByUid);
 
 module.exports = router;

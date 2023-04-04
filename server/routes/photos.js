@@ -3,8 +3,12 @@ const router = require("express").Router();
 
 // /photos
 router.get("/", controller.getAllPhotos);
-router.post("/", controller.createNewPhoto);
-router.delete("/?pid=:pid", controller.deletePhotoByPid);
+router.get("/?uid=:uid", controller.getPhotosByUid);
 router.get("/:tag", controller.getPhotosByTag);
+router.get("/:uid/:tag", controller.getPhotosByUidAndTag);
+
+router.post("/", controller.createNewPhoto);
+
+router.delete("/?pid=:pid", controller.deletePhotoByPid);
 
 module.exports = router;

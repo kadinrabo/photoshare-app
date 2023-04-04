@@ -80,9 +80,7 @@ exports.getUsersBySearch = (req, res, next) => {
 	// Otherwise, treat the search parameter as regular text
 	else {
 		const query = `
-        SELECT *
-        FROM usertable
-        WHERE fname ILIKE $1 OR lname ILIKE $1;
+        SELECT * FROM usertable WHERE fname ILIKE '%' || $1 || '%' OR lname ILIKE '%' || $1 || '%' OR concat(fname, ' ', lname) ILIKE '%' || $1 || '%';
       `;
 		client.query(query, [`%${search}%`], (err, result) => {
 			if (err) {

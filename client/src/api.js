@@ -70,6 +70,17 @@ export async function fetchPhotosByTag(tag) {
 	}
 }
 
+export async function fetchAllTagsByUser(uid) {
+	try {
+		const response = await fetch(`http://localhost:8080/tags/${uid}`);
+		const data = await response.json();
+		const tags = new Tags(data);
+		return tags;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 export async function createNewPhoto(aid, pdata, caption) {
 	const newPhoto = { aid, pdata, caption };
 	try {
@@ -146,6 +157,41 @@ export async function fetchAddTag(tag, pid) {
 export async function fetchTagsByPid(pid) {
 	try {
 		const response = await fetch(`http://localhost:8080/tags/pid=${pid}`);
+		const data = await response.json();
+		const tags = new Tags(data);
+		return tags;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchPhotosByUidTag(uid, tag) {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/photos/${uid}/${tag.substring(1)}`
+		);
+		const data = await response.json();
+		const photos = new Photos(data);
+		return photos;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchPhotosByUid(uid) {
+	try {
+		const response = await fetch(`http://localhost:8080/photos/uid=${uid}`);
+		const data = await response.json();
+		const photos = new Photos(data);
+		return photos;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchUniqueTagsByUid(uid) {
+	try {
+		const response = await fetch(`http://localhost:8080/tags/uid=${uid}`);
 		const data = await response.json();
 		const tags = new Tags(data);
 		return tags;
