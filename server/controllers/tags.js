@@ -23,7 +23,7 @@ exports.getPopularTags = (req, res, next) => {
 exports.getAllUniqueTagsByUid = (req, res, next) => {
 	const uid = req.params.uid;
 	const query = `
-		SELECT tag FROM tagtable WHERE tid in
+		SELECT * FROM tagtable WHERE tid in
 			(SELECT tid FROM hastag WHERE pid in
 				(SELECT pid FROM phototable WHERE aid in
 					(SELECT aid FROM albumtable WHERE uid = $1))

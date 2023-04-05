@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { fetchTop5CScore } from "../api";
+// import { fetchTagsYouMayAlsoLike } from "../api";
+import { fetchUniqueTagsByUid } from "../api";
 
-function CScore() {
-	const [top5, setTop5] = useState([]);
+function YouMayAlsoLike() {
+	const [goodTags, setGoodTags] = useState([]);
 
 	useEffect(() => {
 		async function fetchData() {
-			const fetchedData = await fetchTop5CScore();
-			setTop5(fetchedData.users);
+			const fetchedData = await fetchUniqueTagsByUid(
+				localStorage.getItem("uid")
+			);
+			setGoodTags(fetchedData.tags);
 		}
 		fetchData();
 	}, []);
@@ -15,7 +18,7 @@ function CScore() {
 	return (
 		<>
 			<div
-				className="top5-container"
+				className="goodtags-container"
 				style={{
 					padding: "20px",
 					borderRadius: "10px",
@@ -23,19 +26,19 @@ function CScore() {
 					backgroundColor: "white",
 				}}
 			>
-				<h1 style={{ maxWidth: "90%" }}>Top 5 Users</h1>
-				{top5.map((top) => (
-					<div className="top" key={top.uid}>
-						{top.fname} {top.lname}
+				<h2 style={{ maxWidth: "90%" }}>Tags You Might Like</h2>
+				{goodTags.map((tag) => (
+					<div className="tag" key={tag.tid}>
+						{tag.tag}
 					</div>
 				))}
 				<style jsx="true">{`
-					.top5-container {
+					.goodtags-container {
 						display: flex;
 						flex-wrap: wrap;
 						justify-content: center;
 					}
-					.top {
+					.tag {
 						display: flex;
 						align-items: center;
 						justify-content: center;
@@ -61,4 +64,4 @@ function CScore() {
 	);
 }
 
-export default CScore;
+export default YouMayAlsoLike;

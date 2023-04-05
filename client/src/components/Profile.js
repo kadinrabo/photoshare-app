@@ -10,6 +10,7 @@ import Followers from "./Followers";
 import Following from "./Following";
 import UpdateInfo from "./UpdateInfo";
 import Recommendations from "./Recommendations";
+import YouMayAlsoLike from "./YouMayAlsoLike";
 
 function Profile() {
 	const [user, setUser] = useState(null);
@@ -86,6 +87,9 @@ function Profile() {
 				</div>
 				<div style={{ flex: 1 }}>
 					{user && <UserAlbums user={user}></UserAlbums>}
+				</div>
+				<div style={{ flex: 1 }}>
+					<YouMayAlsoLike />
 				</div>
 				<div style={{ flex: 1 }}>
 					<button onClick={handleOpenFollowersPopup}>Followers</button>
