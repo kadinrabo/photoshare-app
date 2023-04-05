@@ -64,15 +64,13 @@ function SearchForFriends() {
 	return (
 		<div
 			style={{
-				width: "200px",
-				height: "250px",
 				padding: "20px",
 				borderRadius: "10px",
 				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 				backgroundColor: "white",
 			}}
 		>
-			<p style={{ padding: "0px" }}>Search for others</p>
+			<h1 style={{ padding: "0px" }}>Search for friends</h1>
 			<input
 				type="text"
 				value={query}
@@ -82,6 +80,7 @@ function SearchForFriends() {
 					border: "1px solid #ddd",
 					borderRadius: "5px",
 					marginBottom: "10px",
+					maxWidth: "90%",
 				}}
 			/>
 			<SearchResults results={results} />

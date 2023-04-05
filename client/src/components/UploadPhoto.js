@@ -51,6 +51,11 @@ function UploadPhoto() {
 					(snapshot.bytesTransferred / snapshot.totalBytes) * 100
 				);
 				setProgresspercent(progress);
+				if (progress == 100) {
+					setTimeout(() => {
+						location.reload();
+					}, 5000);
+				}
 			},
 			(error) => {
 				alert(error);
@@ -77,6 +82,7 @@ function UploadPhoto() {
 				padding: "20px",
 			}}
 		>
+			<h1 style={{ maxWidth: "90%" }}>Photo Upload</h1>
 			<div className="App">
 				<input
 					type="text"

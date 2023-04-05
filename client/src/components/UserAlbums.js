@@ -15,9 +15,18 @@ function AlbumRow({ album, onItemClick }) {
 				margin: "1px 0",
 			}}
 		>
-			<h4 style={{ display: "inline-block", marginRight: "10px" }}>
+			<h3
+				style={{
+					display: "inline-block",
+					marginRight: "10px",
+					color: "#3478f6",
+					textDecoration: "none",
+					margin: 0,
+					padding: 2,
+				}}
+			>
 				{album.aname ? album.aname : "Album Name"}
-			</h4>
+			</h3>
 		</div>
 	);
 }
@@ -81,10 +90,11 @@ function UserAlbums({ user }) {
 				borderRadius: "10px",
 				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 				backgroundColor: "white",
+				alignItems: "center",
 				overflow: "auto",
 			}}
 		>
-			<h1>Albums</h1>
+			<h1 style={{ maxWidth: "90%" }}>Albums</h1>
 			<Albums albums={albums} onItemClick={handleAlbumClick} />
 			{user && user.uid == localStorage.getItem("uid") && (
 				<div style={{ display: "flex", marginTop: "0px" }}>

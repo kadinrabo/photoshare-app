@@ -42,6 +42,11 @@ function Profile() {
 		setShowRecsPopup(false);
 	}
 
+	function handleLogout() {
+		localStorage.removeItem("uid");
+		window.location.reload();
+	}
+
 	useEffect(() => {
 		async function fetchUser() {
 			const fetchedUser = await fetchUsersBySearch(uid);
@@ -70,26 +75,32 @@ function Profile() {
 			<div
 				style={{
 					display: "flex",
+					flexWrap: "wrap",
 					justifyContent: "center",
-					alignItems: "center",
+					gap: "20px",
 					padding: "20px",
 				}}
 			>
-				<div style={{ marginRight: "40px" }}>
+				<div style={{ flex: 1 }}>
 					{user && <UserPhotos user={user}></UserPhotos>}
 				</div>
-				{user && <UserAlbums user={user}></UserAlbums>}
-			</div>
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "center",
-				}}
-			>
-				<button onClick={handleOpenFollowersPopup}>Followers</button>
-				<button onClick={handleOpenFollowingPopup}>Following</button>
-				<button onClick={handleOpenRecsPopup}>Recommendations</button>
+				<div style={{ flex: 1 }}>
+					{user && <UserAlbums user={user}></UserAlbums>}
+				</div>
+				<div style={{ flex: 1 }}>
+					<button onClick={handleOpenFollowersPopup}>Followers</button>
+					<button onClick={handleOpenFollowingPopup}>Following</button>
+					<button onClick={handleOpenRecsPopup}>Recommendations</button>
+				</div>
+				<div style={{ flex: 1 }}>
+					<UploadPhoto />
+				</div>
+				<div style={{ flex: 1 }}>
+					<UpdateInfo />
+				</div>
+				<div style={{ flex: 1 }}>
+					<button onClick={handleLogout}>Log Out</button>
+				</div>
 			</div>
 			<Popup
 				isOpen={showFollowersPopup}
@@ -118,31 +129,6 @@ function Profile() {
 			>
 				{user && <Recommendations user={user} />}
 			</Popup>
-
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "flex-start",
-					padding: "20px",
-				}}
-			>
-				<div style={{ flex: 1, justifyContent: "center", display: "flex" }}>
-					<UploadPhoto />
-				</div>
-			</div>
-			<div
-				style={{
-					display: "flex",
-					justifyContent: "center",
-					alignItems: "flex-start",
-					padding: "20px",
-				}}
-			>
-				<div style={{ flex: 1, justifyContent: "center", display: "flex" }}>
-					<UpdateInfo />
-				</div>
-			</div>
 		</>
 	);
 }

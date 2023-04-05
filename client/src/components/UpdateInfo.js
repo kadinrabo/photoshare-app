@@ -62,6 +62,8 @@ function UpdateInfo() {
 			gender: "",
 			home: "",
 		});
+
+		location.reload();
 	};
 
 	return (
@@ -76,7 +78,7 @@ function UpdateInfo() {
 				alignItems: "center",
 			}}
 		>
-			<h3>Update Information</h3>
+			<h1 style={{ maxWidth: "90%" }}>Update Info</h1>
 			<input
 				type="text"
 				name="pass"

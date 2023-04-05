@@ -25,19 +25,29 @@ function SearchResult({ photo, onItemClick }) {
 				margin: "1px 0",
 			}}
 		>
-			<h4 style={{ display: "inline-block", marginRight: "10px" }}>
+			<h5
+				style={{
+					display: "inline-block",
+					marginRight: "10px",
+					color: "#3478f6",
+					textDecoration: "none",
+					margin: 0,
+					padding: 0,
+				}}
+			>
 				{photo.caption ? photo.caption : "Photo"}
-			</h4>
+			</h5>
 			{user && (
-				<p
+				<h7
 					style={{
 						display: "inline-block",
 						fontSize: "14px",
 						color: "#999",
+						padding: 3,
 					}}
 				>
 					By {user.fname} {user.lname}
-				</p>
+				</h7>
 			)}
 		</div>
 	);
@@ -94,15 +104,13 @@ function SearchForTags() {
 	return (
 		<div
 			style={{
-				width: "200px",
-				height: "250px",
 				padding: "20px",
 				borderRadius: "10px",
 				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 				backgroundColor: "white",
 			}}
 		>
-			<p style={{ padding: "0px" }}>Search by tag (no #)</p>
+			<h1 style={{ padding: "0px" }}>Search by tag (no #)</h1>
 			<input
 				type="text"
 				value={query}
@@ -112,6 +120,7 @@ function SearchForTags() {
 					border: "1px solid #ddd",
 					borderRadius: "5px",
 					marginBottom: "10px",
+					maxWidth: "90%",
 				}}
 			/>
 			<SearchResults photos={photos} onItemClick={handleResultClick} />

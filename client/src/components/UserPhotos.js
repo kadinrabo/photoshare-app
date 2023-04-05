@@ -30,20 +30,18 @@ function PhotoRow({ photo, onItemClick }) {
 				margin: "1px 0",
 			}}
 		>
-			<h4 style={{ display: "inline-block", marginRight: "10px" }}>
+			<h3
+				style={{
+					display: "inline-block",
+					marginRight: "10px",
+					color: "#3478f6",
+					textDecoration: "none",
+					margin: 0,
+					padding: 2,
+				}}
+			>
 				{photo.caption ? photo.caption : "Photo"}
-			</h4>
-			{user && (
-				<p
-					style={{
-						display: "inline-block",
-						fontSize: "14px",
-						color: "#999",
-					}}
-				>
-					By {user.fname} {user.lname}
-				</p>
-			)}
+			</h3>
 		</div>
 	);
 }
@@ -86,8 +84,13 @@ function UserPhotos({ user }) {
 			i === index ? !state : false
 		);
 		setTagStates(newTagStates);
-		const fetchedData = await fetchPhotosByUidTag(user.uid, tag);
-		setPhotos(fetchedData.photos);
+		if (tagStates[index]) {
+			const fetchedData = await fetchPhotosByUid(user.uid);
+			setPhotos(fetchedData.photos);
+		} else {
+			const fetchedData = await fetchPhotosByUidTag(user.uid, tag);
+			setPhotos(fetchedData.photos);
+		}
 	};
 
 	useEffect(() => {
@@ -116,10 +119,11 @@ function UserPhotos({ user }) {
 				borderRadius: "10px",
 				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 				backgroundColor: "white",
+				alignItems: "center",
 				overflow: "auto",
 			}}
 		>
-			<h1>Photos</h1>
+			<h1 style={{ maxWidth: "90%" }}>Photos</h1>
 			<Photos photos={photos} onItemClick={handlePhotoClick} />
 			{tags && (
 				<p style={{ display: "flex", flexWrap: "wrap" }}>
@@ -129,7 +133,7 @@ function UserPhotos({ user }) {
 							href="#"
 							style={{
 								textDecoration: "none",
-								color: tagStates[index] ? "blue" : "grey",
+								color: tagStates[index] ? "#3478f6" : "grey",
 								whiteSpace: "nowrap",
 								marginRight: "5px",
 							}}

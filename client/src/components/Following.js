@@ -14,13 +14,20 @@ function Following({ user }) {
 
 	return (
 		<>
-			<div style={{ display: "flex", justifyContent: "center" }}>
-				<ul style={{ listStyleType: "none" }}>
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+					width: "90%",
+				}}
+			>
+				<ul style={{ listStyleType: "none", margin: 0, padding: 0 }}>
 					{users.map((user) => (
 						<li key={user.uid}>
-							<h1>
+							<h2>
 								{user.fname} {user.lname}
-							</h1>
+							</h2>
 						</li>
 					))}
 				</ul>

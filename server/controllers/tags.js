@@ -1,8 +1,17 @@
 const client = require("../util/database");
 
 // Handler for http://localhost:8080/tags
-exports.getAllTags = (req, res, next) => {
-	client.query("SELECT * FROM tagtable", (err, result) => {
+exports.getPopularTags = (req, res, next) => {
+	const query = `
+		SELECT t.*
+		FROM hastag ht
+		JOIN tagtable t ON ht.tid = t.tid
+		GROUP BY ht.tid, t.tag, t.tid
+		ORDER BY COUNT(*) DESC
+		LIMIT 10;
+	`;
+
+	client.query(query, (err, result) => {
 		if (err) {
 			return next(err);
 		}

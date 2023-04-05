@@ -1,8 +1,17 @@
 const client = require("../util/database");
 
 // Handler for http://localhost:8080/users
-exports.getAllUsers = (req, res, next) => {
-	client.query("SELECT * FROM usertable", (err, result) => {
+exports.getUsersByCScore = (req, res, next) => {
+	const query = `
+		SELECT usertable.* FROM usertable
+		LEFT JOIN albumtable ON usertable.uid = albumtable.uid
+		LEFT JOIN phototable ON albumtable.aid = phototable.aid
+		LEFT JOIN commenttable ON usertable.uid = commenttable.uid
+		GROUP BY usertable.uid, usertable.email, usertable.fname, usertable.lname
+		ORDER BY COUNT(DISTINCT commenttable.cid) + COUNT(DISTINCT phototable.pid) DESC
+		LIMIT 5;
+    `;
+	client.query(query, (err, result) => {
 		if (err) {
 			return next(err);
 		}

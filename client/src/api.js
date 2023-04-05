@@ -298,6 +298,50 @@ export async function fetchPhotosByAid(aid) {
 	}
 }
 
+export async function fetchTop10PopularTags() {
+	try {
+		const response = await fetch(`http://localhost:8080/tags`);
+		const data = await response.json();
+		const tags = new Tags(data);
+		return tags;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchTop5CScore() {
+	try {
+		const response = await fetch(`http://localhost:8080/users`);
+		const data = await response.json();
+		const tags = new Users(data);
+		return tags;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchAllAlbums() {
+	try {
+		const response = await fetch(`http://localhost:8080/albums`);
+		const data = await response.json();
+		const albums = new Albums(data);
+		return albums;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchAllPhotos() {
+	try {
+		const response = await fetch(`http://localhost:8080/photos`);
+		const data = await response.json();
+		const photos = new Photos(data);
+		return photos;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 export async function fetchUniqueTagsByUid(uid) {
 	try {
 		const response = await fetch(`http://localhost:8080/tags/uid=${uid}`);
