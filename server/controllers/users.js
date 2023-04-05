@@ -27,6 +27,27 @@ exports.getUserByPid = (req, res, next) => {
 	});
 };
 
+exports.getRecsByUid = (req, res, next) => {
+	const uid = req.params.uid;
+	const query = `
+	SELECT u.*
+	FROM usertable u
+	JOIN hasfriend hf1 ON u.uid = hf1.fid
+	JOIN hasfriend hf2 ON hf1.uid = hf2.fid
+	WHERE hf2.uid = $1 AND u.uid NOT IN (
+		SELECT fid FROM hasfriend WHERE uid = $1
+	) AND u.uid != $1
+	GROUP BY u.uid, u.email
+	ORDER BY COUNT(*) DESC;
+	`;
+	client.query(query, [uid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
 exports.getUserHasLikeByPid = (req, res, next) => {
 	const pid = req.params.haslikepid;
 	const query = `

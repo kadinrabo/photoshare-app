@@ -210,6 +210,17 @@ export async function fetchFollowingByUid(uid) {
 	}
 }
 
+export async function fetchUserRecommendationsByUid(uid) {
+	try {
+		const response = await fetch(`http://localhost:8080/users/uid=${uid}`);
+		const data = await response.json();
+		const users = new Users(data);
+		return users;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 export async function fetchUpdateUserByUid(uid, uData) {
 	try {
 		await fetch(`http://localhost:8080/users/uid=${uid}`, {
@@ -224,7 +235,7 @@ export async function fetchUpdateUserByUid(uid, uData) {
 	}
 }
 
-export async function fetchFollowedByUidF(uid) {
+export async function fetchFolllowersByUid(uid) {
 	try {
 		const response = await fetch(`http://localhost:8080/friends/uidf=${uid}`);
 		const data = await response.json();

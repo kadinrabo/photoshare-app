@@ -2,24 +2,24 @@ import React, { useEffect, useState } from "react";
 import { fetchFollowingByUid } from "../api";
 
 function Following({ user }) {
-	const [following, setFollowing] = useState([]);
+	const [users, setUsers] = useState([]);
 
 	useEffect(() => {
-		async function fetchFollowing() {
+		async function fetchData() {
 			const fetchData = await fetchFollowingByUid(user.uid);
-			setFollowing(fetchData.users);
+			setUsers(fetchData.users);
 		}
-		fetchFollowing();
+		fetchData();
 	}, [user]);
 
 	return (
 		<>
 			<div style={{ display: "flex", justifyContent: "center" }}>
 				<ul style={{ listStyleType: "none" }}>
-					{following.map((follow) => (
-						<li key={follow.uid}>
+					{users.map((user) => (
+						<li key={user.uid}>
 							<h1>
-								{follow.fname} {follow.lname}
+								{user.fname} {user.lname}
 							</h1>
 						</li>
 					))}

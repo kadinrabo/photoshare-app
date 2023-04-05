@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { fetchFolllowersByUid } from "../api";
+import { fetchUserRecommendationsByUid } from "../api";
 
-function Followers() {
+function Recommendations({ user }) {
 	const [users, setUsers] = useState([]);
 
 	useEffect(() => {
 		async function fetchData() {
-			const fetchedData = await fetchFolllowersByUid(
+			const fetchedData = await fetchUserRecommendationsByUid(
 				localStorage.getItem("uid")
 			);
 			setUsers(fetchedData.users);
@@ -31,4 +31,4 @@ function Followers() {
 	);
 }
 
-export default Followers;
+export default Recommendations;

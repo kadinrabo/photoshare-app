@@ -9,12 +9,14 @@ import UserAlbums from "./UserAlbums";
 import Followers from "./Followers";
 import Following from "./Following";
 import UpdateInfo from "./UpdateInfo";
+import Recommendations from "./Recommendations";
 
 function Profile() {
 	const [user, setUser] = useState(null);
 	const uid = localStorage.getItem("uid");
 	const [showFollowersPopup, setShowFollowersPopup] = useState(false);
 	const [showFollowingPopup, setShowFollowingPopup] = useState(false);
+	const [showRecsPopup, setShowRecsPopup] = useState(false);
 
 	function handleOpenFollowersPopup() {
 		setShowFollowersPopup(true);
@@ -30,6 +32,14 @@ function Profile() {
 
 	function handleCloseFollowingPopup() {
 		setShowFollowingPopup(false);
+	}
+
+	function handleOpenRecsPopup() {
+		setShowRecsPopup(true);
+	}
+
+	function handleCloseRecsPopup() {
+		setShowRecsPopup(false);
 	}
 
 	useEffect(() => {
@@ -79,6 +89,7 @@ function Profile() {
 			>
 				<button onClick={handleOpenFollowersPopup}>Followers</button>
 				<button onClick={handleOpenFollowingPopup}>Following</button>
+				<button onClick={handleOpenRecsPopup}>Recommendations</button>
 			</div>
 			<Popup
 				isOpen={showFollowersPopup}
@@ -96,6 +107,16 @@ function Profile() {
 				}}
 			>
 				{user && <Following user={user} />}
+			</Popup>
+			<Popup
+				isOpen={showRecsPopup}
+				onClose={handleCloseRecsPopup}
+				contentStyle={{
+					maxWidth: "fit-content",
+					padding: "0 20px",
+				}}
+			>
+				{user && <Recommendations user={user} />}
 			</Popup>
 
 			<div
