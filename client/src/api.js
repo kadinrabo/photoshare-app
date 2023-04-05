@@ -210,6 +210,20 @@ export async function fetchFollowingByUid(uid) {
 	}
 }
 
+export async function fetchUpdateUserByUid(uid, uData) {
+	try {
+		await fetch(`http://localhost:8080/users/uid=${uid}`, {
+			method: "PUT",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(uData),
+		});
+	} catch (error) {
+		console.error(error);
+	}
+}
+
 export async function fetchFollowedByUidF(uid) {
 	try {
 		const response = await fetch(`http://localhost:8080/friends/uidf=${uid}`);

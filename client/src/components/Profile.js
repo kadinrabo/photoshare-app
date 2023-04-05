@@ -8,6 +8,7 @@ import UserPhotos from "./UserPhotos";
 import UserAlbums from "./UserAlbums";
 import Followers from "./Followers";
 import Following from "./Following";
+import UpdateInfo from "./UpdateInfo";
 
 function Profile() {
 	const [user, setUser] = useState(null);
@@ -107,6 +108,18 @@ function Profile() {
 			>
 				<div style={{ flex: 1, justifyContent: "center", display: "flex" }}>
 					<UploadPhoto />
+				</div>
+			</div>
+			<div
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "flex-start",
+					padding: "20px",
+				}}
+			>
+				<div style={{ flex: 1, justifyContent: "center", display: "flex" }}>
+					<UpdateInfo />
 				</div>
 			</div>
 		</>

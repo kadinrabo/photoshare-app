@@ -105,3 +105,45 @@ exports.createNewUser = (req, res, next) => {
 		}
 	);
 };
+
+exports.updateUserByUid = (req, res, next) => {
+	const uid = req.params.uid;
+	const { pass, fname, lname, dob, gender, home } = req.body;
+
+	let query = `UPDATE usertable SET `;
+	const params = [uid];
+
+	if (pass !== "") {
+		query += `pass = $2, `;
+		params.push(pass);
+	}
+	if (fname !== "") {
+		query += `fname = $${params.length + 1}, `;
+		params.push(fname);
+	}
+	if (lname !== "") {
+		query += `lname = $${params.length + 1}, `;
+		params.push(lname);
+	}
+	if (dob !== "") {
+		query += `dob = $${params.length + 1}, `;
+		params.push(dob);
+	}
+	if (gender !== "") {
+		query += `gender = $${params.length + 1}, `;
+		params.push(gender);
+	}
+	if (home !== "") {
+		query += `home = $${params.length + 1}, `;
+		params.push(home);
+	}
+	query = query.slice(0, -2);
+	query += ` WHERE uid = $1;`;
+
+	client.query(query, params, (err) => {
+		if (err) {
+			return next(err);
+		}
+	});
+	res.status(201).json({ message: "User updated successfully." });
+};
