@@ -114,11 +114,12 @@ function UserPhotos({ user }) {
 				height: "500",
 				padding: "20px",
 				borderRadius: "10px",
-				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 				backgroundColor: "white",
-				overflow: "scroll",
+				overflow: "auto",
 			}}
 		>
+			<h1>Photos</h1>
 			<Photos photos={photos} onItemClick={handlePhotoClick} />
 			{tags && (
 				<p style={{ display: "flex", flexWrap: "wrap" }}>

@@ -4,6 +4,7 @@ import Users from "./models/Users";
 import Albums from "./models/Albums";
 import Comments from "./models/Comments";
 import Tags from "./models/Tags";
+import HasFriend from "./models/HasFriend";
 
 export async function fetchUsersBySearch(searchText) {
 	try {
@@ -154,12 +155,84 @@ export async function fetchAddTag(tag, pid) {
 	}
 }
 
+export async function fetchAddAlbum(uid, aname) {
+	const newAlbum = { uid, aname };
+	try {
+		await fetch("http://localhost:8080/albums", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(newAlbum),
+		});
+	} catch (error) {
+		console.error(error);
+	}
+}
+
 export async function fetchTagsByPid(pid) {
 	try {
 		const response = await fetch(`http://localhost:8080/tags/pid=${pid}`);
 		const data = await response.json();
 		const tags = new Tags(data);
 		return tags;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchAddFriend(uid, fid) {
+	// uid is the uid of the currently logged in user (localStorage)
+	// fid must be the uid of the user being friended
+	const newFriend = { uid, fid };
+	try {
+		await fetch("http://localhost:8080/friends", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(newFriend),
+		});
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+export async function fetchFollowingByUid(uid) {
+	// Actual uid (from localStorage). For the list of friends
+	try {
+		const response = await fetch(`http://localhost:8080/friends/uid=${uid}`);
+		const data = await response.json();
+		const friends = new Users(data);
+		return friends;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchFollowedByUidF(uid) {
+	try {
+		const response = await fetch(`http://localhost:8080/friends/uidf=${uid}`);
+		const data = await response.json();
+		const friends = new Users(data);
+		return friends;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchHasFriendByUidFid(uid, fid) {
+	// uid is the uid of the currently logged in user (localStorage)
+	// fid is the uid of the user we're checking if they're friends with
+	try {
+		const response = await fetch(`http://localhost:8080/friends/${uid}/${fid}`);
+		const data = await response.json();
+		if (data[0]) {
+			const hasFriend = new HasFriend(data[0]);
+			return hasFriend;
+		} else {
+			return null;
+		}
 	} catch (error) {
 		console.log(error);
 	}
@@ -181,6 +254,17 @@ export async function fetchPhotosByUidTag(uid, tag) {
 export async function fetchPhotosByUid(uid) {
 	try {
 		const response = await fetch(`http://localhost:8080/photos/uid=${uid}`);
+		const data = await response.json();
+		const photos = new Photos(data);
+		return photos;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchPhotosByAid(aid) {
+	try {
+		const response = await fetch(`http://localhost:8080/photos/aid=${aid}`);
 		const data = await response.json();
 		const photos = new Photos(data);
 		return photos;

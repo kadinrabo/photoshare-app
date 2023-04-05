@@ -31,8 +31,6 @@ function Popup({ children, onClose, isOpen }) {
 					top: "50%",
 					left: "50%",
 					transform: "translate(-50%, -50%)",
-					width: "70vw",
-					height: "90vw",
 					maxWidth: "90vw",
 					maxHeight: "90vh",
 					overflow: "auto",

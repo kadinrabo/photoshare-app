@@ -68,7 +68,7 @@ function SearchForFriends() {
 				height: "250px",
 				padding: "20px",
 				borderRadius: "10px",
-				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.2)",
+				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 				backgroundColor: "white",
 			}}
 		>

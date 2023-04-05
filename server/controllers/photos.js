@@ -13,15 +13,23 @@ exports.getAllPhotos = (req, res, next) => {
 exports.getPhotosByUidAndTag = (req, res, next) => {
 	const uid = req.params.uid;
 	const tag = req.params.tag;
-	if (tag.trim() == "") {
-		console.log("Here");
-		return;
-	}
 	const query = `
 		SELECT * FROM phototable WHERE pid in (SELECT pid FROM hastag WHERE tid in (SELECT tid FROM tagtable WHERE tag = $1))
 		AND aid in (SELECT aid FROM albumtable WHERE uid = $2);
 	  `;
 	client.query(query, ["#" + tag, uid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
+exports.getPhotosByAid = (req, res, next) => {
+	const aid = req.params.aid;
+
+	const query = `SELECT * FROM phototable WHERE aid = $1;`;
+	client.query(query, [aid], (err, result) => {
 		if (err) {
 			return next(err);
 		}

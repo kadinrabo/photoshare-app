@@ -30,6 +30,9 @@ app.use("/tags", require("./routes/tags"));
 // Set a route for http://localhost:8080/likes
 app.use("/likes", require("./routes/likes"));
 
+// Set a route for http://localhost:8080/friends
+app.use("/friends", require("./routes/friends"));
+
 // Just show a message for http://localhost:8080/
 app.get("/", (req, res, next) => {
 	res.send("Api running 👍");
