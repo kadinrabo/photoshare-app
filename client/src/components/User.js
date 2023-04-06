@@ -64,15 +64,17 @@ function User() {
 			<div
 				style={{
 					display: "flex",
+					flexWrap: "wrap",
 					justifyContent: "center",
-					alignItems: "center",
-					padding: "20px",
+					gap: "20px",
 				}}
 			>
-				<div style={{ marginRight: "40px" }}>
+				<div style={{ flex: 1, paddingLeft: "20px" }}>
 					{user && <UserPhotos user={user}></UserPhotos>}
 				</div>
-				{user && <UserAlbums user={user}></UserAlbums>}
+				<div style={{ flex: 1, paddingRight: "20px" }}>
+					{user && <UserAlbums user={user}></UserAlbums>}
+				</div>
 			</div>
 			<div
 				style={{

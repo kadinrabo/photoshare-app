@@ -1,9 +1,4 @@
--- ########################################################################
--- Entities
-
 DROP TABLE IF EXISTS UserTable CASCADE;
-
---SERIAL: Auto increment 1 to 2147483647
 CREATE TABLE UserTable (
     uid serial NOT NULL UNIQUE,
 	email varchar(320) NOT NULL UNIQUE,
@@ -15,19 +10,12 @@ CREATE TABLE UserTable (
 	home varchar(50) DEFAULT NULL,
     PRIMARY KEY (uid, email)
 );
-
 DROP TABLE IF EXISTS FriendTable CASCADE;
-
--- CHECK(uid >= 1) might be redunant, just really
--- making sure we are non-negative.
 CREATE TABLE FriendTable (
     fid integer PRIMARY KEY NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(fid >= 1),
     dof timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
 DROP TABLE IF EXISTS AlbumTable CASCADE;
-
--- enforcing an album name
 CREATE TABLE AlbumTable (
     aid serial NOT NULL UNIQUE,
     uid integer NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(uid >= 1),
@@ -35,102 +23,67 @@ CREATE TABLE AlbumTable (
     doc timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (aid, uid)
 );
-
 DROP TABLE IF EXISTS PhotoTable CASCADE;
-
--- pdata will be a unique link to the photo in a file system (Firestore?)
 CREATE TABLE PhotoTable (
     pid serial PRIMARY KEY NOT NULL UNIQUE,
     aid integer NOT NULL REFERENCES AlbumTable(aid) ON DELETE CASCADE CHECK(aid >= 1),
     pdata varchar(400) NOT NULL,
     caption varchar(1000) DEFAULT NULL
 );
-
 DROP TABLE IF EXISTS CommentTable CASCADE;
-
 CREATE TABLE CommentTable (
     cid serial PRIMARY KEY NOT NULL UNIQUE,
     uid integer NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(uid >= 1),
     ctext varchar(1000) NOT NULL,
     doc timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-
 DROP TABLE IF EXISTS TagTable CASCADE;
-
 CREATE TABLE TagTable (
     tid serial NOT NULL UNIQUE,
     tag varchar(50) NOT NULL,
     PRIMARY KEY (tid, tag)
 );
-
 DROP TABLE IF EXISTS LikeTable CASCADE;
-
--- lid = like ID
 CREATE TABLE LikeTable (
     lid serial PRIMARY KEY NOT NULL UNIQUE,
     uid integer NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(uid >= 1)
 );
-
--- ########################################################################
--- Relationships
-
 DROP TABLE IF EXISTS HasFriend CASCADE;
-
--- User has a friend
 CREATE TABLE HasFriend (
     uid integer NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(uid >= 1),
     fid integer NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(fid >= 1),
     PRIMARY KEY(uid, fid)
 );
-
 DROP TABLE IF EXISTS HasAlbum CASCADE;
-
--- User has an album
 CREATE TABLE HasAlbum (
     uid integer NOT NULL REFERENCES UserTable(uid) ON DELETE CASCADE CHECK(uid >= 1),
     aid integer NOT NULL REFERENCES AlbumTable(aid) ON DELETE CASCADE CHECK(aid >= 1),
     PRIMARY KEY (uid, aid)
 );
-
 DROP TABLE IF EXISTS Contains CASCADE;
-
--- Album contains photo
 CREATE TABLE Contains (
     aid integer NOT NULL REFERENCES AlbumTable(aid) ON DELETE CASCADE CHECK(aid >= 1),
     pid integer NOT NULL REFERENCES PhotoTable(pid) ON DELETE CASCADE CHECK(pid >= 1),
     PRIMARY KEY (aid, pid)
 );
-
 DROP TABLE IF EXISTS HasLike CASCADE;
-
--- Photo has like (uid uniquely identifies the like)
 CREATE TABLE HasLike (
     pid integer NOT NULL REFERENCES PhotoTable(pid) ON DELETE CASCADE CHECK(pid >= 1),
     lid integer NOT NULL REFERENCES LikeTable(lid) ON DELETE CASCADE CHECK(lid >= 1),
     PRIMARY KEY (pid, lid)
 );
-
 DROP TABLE IF EXISTS HasTag CASCADE;
-
--- Photo has tag
 CREATE TABLE HasTag (
     pid integer NOT NULL REFERENCES PhotoTable(pid) ON DELETE CASCADE CHECK(pid >= 1),
     tid integer NOT NULL REFERENCES TagTable(tid) ON DELETE CASCADE CHECK(tid >= 1),
     PRIMARY KEY (pid, tid)
 );
-
 DROP TABLE IF EXISTS HasComment CASCADE;
-
--- Photo has comment
 CREATE TABLE HasComment (
     pid integer NOT NULL REFERENCES PhotoTable(pid) ON DELETE CASCADE CHECK(pid >= 1),
     cid integer NOT NULL REFERENCES CommentTable(cid) ON DELETE CASCADE CHECK(cid >= 1),
     PRIMARY KEY (pid, cid)
 );
-
--- ########################################################################
--- Entities
-
 TRUNCATE TABLE UserTable CASCADE;
 INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('john.doe@example.com', 'John', 'Doe', 'password', '1990-01-01', 'Male', 'New York');
 INSERT INTO UserTable (email, fname, lname, pass, dob) VALUES ('jane.doe@example.com', 'Jane', 'Doe', 'password', '1992-02-02');
@@ -142,9 +95,7 @@ INSERT INTO UserTable (email, fname, lname, pass, dob, gender) VALUES ('mary.bro
 INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('chris.taylor@example.com', 'Chris', 'Taylor', 'password', '1994-08-08', 'Male', 'Seattle');
 INSERT INTO UserTable (email, fname, lname, pass, dob) VALUES ('samuel.clark@example.com', 'Samuel', 'Clark', 'password', '1999-09-09');
 INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('linda.smith@example.com', 'Linda', 'Smith', 'password', '1997-10-10', NULL, 'San Francisco');
-
 TRUNCATE TABLE FriendTable CASCADE;
-
 INSERT INTO FriendTable (fid) VALUES (1);
 INSERT INTO FriendTable (fid) VALUES (2);
 INSERT INTO FriendTable (fid) VALUES (3);
@@ -155,61 +106,356 @@ INSERT INTO FriendTable (fid) VALUES (7);
 INSERT INTO FriendTable (fid) VALUES (8);
 INSERT INTO FriendTable (fid) VALUES (9);
 INSERT INTO FriendTable (fid) VALUES (10);
-
 TRUNCATE TABLE AlbumTable CASCADE;
-
 INSERT INTO AlbumTable (uid, aname) VALUES (1, 'Vacation Memories');
+INSERT INTO AlbumTable (uid, aname) VALUES (1, 'Memories on Vacation');
 INSERT INTO AlbumTable (uid, aname) VALUES (2, 'Family Reunion');
+INSERT INTO AlbumTable (uid, aname) VALUES (2, 'Reunion of the Family');
 INSERT INTO AlbumTable (uid, aname) VALUES (3, 'Graduation Party');
+INSERT INTO AlbumTable (uid, aname) VALUES (3, 'Party of Graduation');
 INSERT INTO AlbumTable (uid, aname) VALUES (4, 'Halloween 2022');
+INSERT INTO AlbumTable (uid, aname) VALUES (4, '2022 Halloween');
 INSERT INTO AlbumTable (uid, aname) VALUES (5, 'Road Trip');
+INSERT INTO AlbumTable (uid, aname) VALUES (5, 'Trip on the Road');
 INSERT INTO AlbumTable (uid, aname) VALUES (6, 'New Year Celebrations');
+INSERT INTO AlbumTable (uid, aname) VALUES (6, 'Celebrations of the New Year');
 INSERT INTO AlbumTable (uid, aname) VALUES (7, 'Baby Shower');
+INSERT INTO AlbumTable (uid, aname) VALUES (7, 'Shower of the Baby');
 INSERT INTO AlbumTable (uid, aname) VALUES (8, 'Wedding Anniversary');
+INSERT INTO AlbumTable (uid, aname) VALUES (8, 'Anniversary of the Wedding');
 INSERT INTO AlbumTable (uid, aname) VALUES (9, 'Summer Picnic');
+INSERT INTO AlbumTable (uid, aname) VALUES (9, 'Picnic of the Summer');
 INSERT INTO AlbumTable (uid, aname) VALUES (10, 'Christmas Party');
-
+INSERT INTO AlbumTable (uid, aname) VALUES (10, 'Party of Christmas');
 TRUNCATE TABLE PhotoTable CASCADE;
-
 INSERT INTO PhotoTable (aid, pdata, caption) VALUES (1, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES (2, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Sunny day at the beach');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (1, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Sunny day at the beach');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (2, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (2, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Family picnic in the park');
 INSERT INTO PhotoTable (aid, pdata, caption) VALUES (3, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES (4, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Family picnic in the park');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (3, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Hiking in the mountains');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (4, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (4, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'At the concert with friends');
 INSERT INTO PhotoTable (aid, pdata, caption) VALUES (5, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES (6, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Hiking in the mountains');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (5, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Summer road trip');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (6, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (6, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Sunny day at the beach');
 INSERT INTO PhotoTable (aid, pdata, caption) VALUES (7, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
-INSERT INTO PhotoTable (aid, pdata, caption) VALUES (8, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'At the concert with friends');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (7, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Family picnic in the park');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (8, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (8, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Hiking in the mountains');
 INSERT INTO PhotoTable (aid, pdata, caption) VALUES (9, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (9, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'At the concert with friends');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (10, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
 INSERT INTO PhotoTable (aid, pdata, caption) VALUES (10, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Summer road trip');
-
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (11, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (11, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Sunny day at the beach');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (12, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (12, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Family picnic in the park');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (13, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (13, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Hiking in the mountains');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (14, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (14, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'At the concert with friends');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (15, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (15, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Summer road trip');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (16, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (16, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Sunny day at the beach');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (17, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (17, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Family picnic in the park');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (18, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (18, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'Hiking in the mountains');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (19, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (19, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'At the concert with friends');
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (20, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', NULL);
+INSERT INTO PhotoTable (aid, pdata, caption) VALUES (20, 'https://firebasestorage.googleapis.com/v0/b/photoshare-3b86d.appspot.com/o/ahsoka.jpg?alt=media&token=e298d572-1e54-475e-b1b6-bab6e23c2342', 'At the concert with friends');
 TRUNCATE TABLE CommentTable CASCADE;
-
 INSERT INTO CommentTable (uid, ctext) VALUES (1, 'Great shot!');
-INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Lovely colors!');
-INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Wow, stunning!');
-INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Beautiful scenery');
-INSERT INTO CommentTable (uid, ctext) VALUES (5, 'So cute!');
-INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Amazing view');
-INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Nice shot!');
-INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Adorable!');
-INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Impressive');
-INSERT INTO CommentTable (uid, ctext) VALUES (10, 'So beautiful!');
-
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Well done!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Impressive!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Awesome job!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Amazing!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Brilliant!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Fantastic!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Outstanding!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Excellent!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Superb!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Great work!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Impressive performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Well executed!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Awesome!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Terrific job!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Incredible!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Marvelous!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Amazing effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Stunning!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Well deserved!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Kudos!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Impressive work!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Thumbs up!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Keep it up!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Well played!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'You rock!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'Nicely done!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Excellent performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Bravo!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Good job!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Impressive skills!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Keep up the great work!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'You nailed it!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Fantastic effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Well done, indeed!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Top-notch!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'Great performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Superb skills!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Amazing display!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'You amazing!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Impressive performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Well done, keep it up!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'Awesome job!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'You a star!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Brilliant!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'You killing it!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Great work, keep going!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'You on fire!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Outstanding performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Well deserved applause!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Impressive skills, indeed!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'You on top of your game!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'Exceptional effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'You a rockstar!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Remarkable performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'You unstoppable!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Keep up the fantastic work!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Incredible display of talent!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Unbelievable skills!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Great shot!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Well played!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Keep up the good work!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'Impressive performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'You are a champion!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Exceptional!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Amazing effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Bravo, well done!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'You are outstanding!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Phenomenal job!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Spectacular performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Incredible skills!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'You are on fire, keep it up!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'Outstanding effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'You are a superstar!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Remarkable display of talent!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'You are unstoppable, keep going!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Great performance, well deserved!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Excellent work, keep it up!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Unbelievable performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Fantastic job!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Well done!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Impressive performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Keep up the great work!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'You are amazing!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Exceptional!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Bravo, well done!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Outstanding effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'You are a star!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Spectacular performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Incredible skills!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'You are on fire, keep it up!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Outstanding display of talent!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'You are a true champion!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Remarkable effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'You are unstoppable, keep going!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Great performance, well deserved!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Excellent work, keep it up!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Awesome job!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Well executed!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Impressive skills!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Brilliant performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'You are incredible!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Exceptional talent!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Outstanding display!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Remarkable effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'You are a superstar!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Great work!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Impressive!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Well done!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'Fantastic!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Bravo!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'You nailed it!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'Incredible effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Superb performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (5, 'Unstoppable!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Well deserved praise!');
+INSERT INTO CommentTable (uid, ctext) VALUES (6, 'Amazing job!');
+INSERT INTO CommentTable (uid, ctext) VALUES (8, 'Well played!');
+INSERT INTO CommentTable (uid, ctext) VALUES (7, 'Impressive display!');
+INSERT INTO CommentTable (uid, ctext) VALUES (1, 'Outstanding performance!');
+INSERT INTO CommentTable (uid, ctext) VALUES (4, 'You are awesome!');
+INSERT INTO CommentTable (uid, ctext) VALUES (3, 'Exceptional talent!');
+INSERT INTO CommentTable (uid, ctext) VALUES (10, 'Brilliant effort!');
+INSERT INTO CommentTable (uid, ctext) VALUES (9, 'Remarkable display!');
+INSERT INTO CommentTable (uid, ctext) VALUES (2, 'You are a star performer!');
 TRUNCATE TABLE TagTable CASCADE;
-
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
 INSERT INTO TagTable (tag) VALUES ('#sunset');
-INSERT INTO TagTable (tag) VALUES ('#beachlife');
-INSERT INTO TagTable (tag) VALUES ('#naturelover');
-INSERT INTO TagTable (tag) VALUES ('#instagood');
-INSERT INTO TagTable (tag) VALUES ('#foodie');
-INSERT INTO TagTable (tag) VALUES ('#travelgram');
-INSERT INTO TagTable (tag) VALUES ('#petsofinstagram');
-INSERT INTO TagTable (tag) VALUES ('#fitnessmotivation');
-INSERT INTO TagTable (tag) VALUES ('#photography');
-INSERT INTO TagTable (tag) VALUES ('#fashionista');
-
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
+INSERT INTO TagTable (tag) VALUES ('#paradise');
+INSERT INTO TagTable (tag) VALUES ('#tropical');
+INSERT INTO TagTable (tag) VALUES ('#sunrise');
+INSERT INTO TagTable (tag) VALUES ('#coralreef');
+INSERT INTO TagTable (tag) VALUES ('#snorkeling');
+INSERT INTO TagTable (tag) VALUES ('#fish');
+INSERT INTO TagTable (tag) VALUES ('#dolphins');
+INSERT INTO TagTable (tag) VALUES ('#whalewatching');
+INSERT INTO TagTable (tag) VALUES ('#marinelife');
+INSERT INTO TagTable (tag) VALUES ('#island');
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
+INSERT INTO TagTable (tag) VALUES ('#sunset');
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
+INSERT INTO TagTable (tag) VALUES ('#paradise');
+INSERT INTO TagTable (tag) VALUES ('#tropical');
+INSERT INTO TagTable (tag) VALUES ('#sunrise');
+INSERT INTO TagTable (tag) VALUES ('#coralreef');
+INSERT INTO TagTable (tag) VALUES ('#snorkeling');
+INSERT INTO TagTable (tag) VALUES ('#fish');
+INSERT INTO TagTable (tag) VALUES ('#dolphins');
+INSERT INTO TagTable (tag) VALUES ('#whalewatching');
+INSERT INTO TagTable (tag) VALUES ('#marinelife');
+INSERT INTO TagTable (tag) VALUES ('#island');
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
+INSERT INTO TagTable (tag) VALUES ('#sunset');
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
+INSERT INTO TagTable (tag) VALUES ('#sunset');
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
+INSERT INTO TagTable (tag) VALUES ('#paradise');
+INSERT INTO TagTable (tag) VALUES ('#tropical');
+INSERT INTO TagTable (tag) VALUES ('#sunrise');
+INSERT INTO TagTable (tag) VALUES ('#coralreef');
+INSERT INTO TagTable (tag) VALUES ('#snorkeling');
+INSERT INTO TagTable (tag) VALUES ('#fish');
+INSERT INTO TagTable (tag) VALUES ('#dolphins');
+INSERT INTO TagTable (tag) VALUES ('#whalewatching');
+INSERT INTO TagTable (tag) VALUES ('#marinelife');
+INSERT INTO TagTable (tag) VALUES ('#island');
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
+INSERT INTO TagTable (tag) VALUES ('#sunset');
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
+INSERT INTO TagTable (tag) VALUES ('#paradise');
+INSERT INTO TagTable (tag) VALUES ('#tropical');
+INSERT INTO TagTable (tag) VALUES ('#sunrise');
+INSERT INTO TagTable (tag) VALUES ('#coralreef');
+INSERT INTO TagTable (tag) VALUES ('#snorkeling');
+INSERT INTO TagTable (tag) VALUES ('#fish');
+INSERT INTO TagTable (tag) VALUES ('#dolphins');
+INSERT INTO TagTable (tag) VALUES ('#whalewatching');
+INSERT INTO TagTable (tag) VALUES ('#marinelife');
+INSERT INTO TagTable (tag) VALUES ('#island');
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
+INSERT INTO TagTable (tag) VALUES ('#sunset');
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
+INSERT INTO TagTable (tag) VALUES ('#sunset');
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
+INSERT INTO TagTable (tag) VALUES ('#paradise');
+INSERT INTO TagTable (tag) VALUES ('#tropical');
+INSERT INTO TagTable (tag) VALUES ('#sunrise');
+INSERT INTO TagTable (tag) VALUES ('#coralreef');
+INSERT INTO TagTable (tag) VALUES ('#snorkeling');
+INSERT INTO TagTable (tag) VALUES ('#fish');
+INSERT INTO TagTable (tag) VALUES ('#dolphins');
+INSERT INTO TagTable (tag) VALUES ('#whalewatching');
+INSERT INTO TagTable (tag) VALUES ('#marinelife');
+INSERT INTO TagTable (tag) VALUES ('#island');
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
+INSERT INTO TagTable (tag) VALUES ('#sunset');
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
+INSERT INTO TagTable (tag) VALUES ('#paradise');
+INSERT INTO TagTable (tag) VALUES ('#tropical');
+INSERT INTO TagTable (tag) VALUES ('#sunrise');
+INSERT INTO TagTable (tag) VALUES ('#coralreef');
+INSERT INTO TagTable (tag) VALUES ('#snorkeling');
+INSERT INTO TagTable (tag) VALUES ('#fish');
+INSERT INTO TagTable (tag) VALUES ('#dolphins');
+INSERT INTO TagTable (tag) VALUES ('#whalewatching');
+INSERT INTO TagTable (tag) VALUES ('#marinelife');
+INSERT INTO TagTable (tag) VALUES ('#island');
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
+INSERT INTO TagTable (tag) VALUES ('#sunset');
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
+INSERT INTO TagTable (tag) VALUES ('#beach');
+INSERT INTO TagTable (tag) VALUES ('#ocean');
+INSERT INTO TagTable (tag) VALUES ('#sunset');
+INSERT INTO TagTable (tag) VALUES ('#waves');
+INSERT INTO TagTable (tag) VALUES ('#sand');
+INSERT INTO TagTable (tag) VALUES ('#surfing');
+INSERT INTO TagTable (tag) VALUES ('#seagulls');
+INSERT INTO TagTable (tag) VALUES ('#swimming');
+INSERT INTO TagTable (tag) VALUES ('#palmtrees');
+INSERT INTO TagTable (tag) VALUES ('#vacation');
 TRUNCATE TABLE LikeTable CASCADE;
-
 INSERT INTO LikeTable (uid) VALUES (1);
 INSERT INTO LikeTable (uid) VALUES (2);
 INSERT INTO LikeTable (uid) VALUES (3);
@@ -220,13 +466,77 @@ INSERT INTO LikeTable (uid) VALUES (7);
 INSERT INTO LikeTable (uid) VALUES (8);
 INSERT INTO LikeTable (uid) VALUES (9);
 INSERT INTO LikeTable (uid) VALUES (10);
-
--- ########################################################################
--- Relationships
-
--- User has friend
+INSERT INTO LikeTable (uid) VALUES (1);
+INSERT INTO LikeTable (uid) VALUES (2);
+INSERT INTO LikeTable (uid) VALUES (3);
+INSERT INTO LikeTable (uid) VALUES (4);
+INSERT INTO LikeTable (uid) VALUES (5);
+INSERT INTO LikeTable (uid) VALUES (6);
+INSERT INTO LikeTable (uid) VALUES (7);
+INSERT INTO LikeTable (uid) VALUES (8);
+INSERT INTO LikeTable (uid) VALUES (9);
+INSERT INTO LikeTable (uid) VALUES (10);
+INSERT INTO LikeTable (uid) VALUES (1);
+INSERT INTO LikeTable (uid) VALUES (2);
+INSERT INTO LikeTable (uid) VALUES (3);
+INSERT INTO LikeTable (uid) VALUES (4);
+INSERT INTO LikeTable (uid) VALUES (5);
+INSERT INTO LikeTable (uid) VALUES (6);
+INSERT INTO LikeTable (uid) VALUES (7);
+INSERT INTO LikeTable (uid) VALUES (8);
+INSERT INTO LikeTable (uid) VALUES (9);
+INSERT INTO LikeTable (uid) VALUES (10);
+INSERT INTO LikeTable (uid) VALUES (1);
+INSERT INTO LikeTable (uid) VALUES (2);
+INSERT INTO LikeTable (uid) VALUES (3);
+INSERT INTO LikeTable (uid) VALUES (4);
+INSERT INTO LikeTable (uid) VALUES (5);
+INSERT INTO LikeTable (uid) VALUES (6);
+INSERT INTO LikeTable (uid) VALUES (7);
+INSERT INTO LikeTable (uid) VALUES (8);
+INSERT INTO LikeTable (uid) VALUES (9);
+INSERT INTO LikeTable (uid) VALUES (10);
+INSERT INTO LikeTable (uid) VALUES (1);
+INSERT INTO LikeTable (uid) VALUES (2);
+INSERT INTO LikeTable (uid) VALUES (3);
+INSERT INTO LikeTable (uid) VALUES (4);
+INSERT INTO LikeTable (uid) VALUES (5);
+INSERT INTO LikeTable (uid) VALUES (6);
+INSERT INTO LikeTable (uid) VALUES (7);
+INSERT INTO LikeTable (uid) VALUES (8);
+INSERT INTO LikeTable (uid) VALUES (9);
+INSERT INTO LikeTable (uid) VALUES (10);
+INSERT INTO LikeTable (uid) VALUES (1);
+INSERT INTO LikeTable (uid) VALUES (2);
+INSERT INTO LikeTable (uid) VALUES (3);
+INSERT INTO LikeTable (uid) VALUES (4);
+INSERT INTO LikeTable (uid) VALUES (5);
+INSERT INTO LikeTable (uid) VALUES (6);
+INSERT INTO LikeTable (uid) VALUES (7);
+INSERT INTO LikeTable (uid) VALUES (8);
+INSERT INTO LikeTable (uid) VALUES (9);
+INSERT INTO LikeTable (uid) VALUES (10);
+INSERT INTO LikeTable (uid) VALUES (1);
+INSERT INTO LikeTable (uid) VALUES (2);
+INSERT INTO LikeTable (uid) VALUES (3);
+INSERT INTO LikeTable (uid) VALUES (4);
+INSERT INTO LikeTable (uid) VALUES (5);
+INSERT INTO LikeTable (uid) VALUES (6);
+INSERT INTO LikeTable (uid) VALUES (7);
+INSERT INTO LikeTable (uid) VALUES (8);
+INSERT INTO LikeTable (uid) VALUES (9);
+INSERT INTO LikeTable (uid) VALUES (10);
+INSERT INTO LikeTable (uid) VALUES (1);
+INSERT INTO LikeTable (uid) VALUES (2);
+INSERT INTO LikeTable (uid) VALUES (3);
+INSERT INTO LikeTable (uid) VALUES (4);
+INSERT INTO LikeTable (uid) VALUES (5);
+INSERT INTO LikeTable (uid) VALUES (6);
+INSERT INTO LikeTable (uid) VALUES (7);
+INSERT INTO LikeTable (uid) VALUES (8);
+INSERT INTO LikeTable (uid) VALUES (9);
+INSERT INTO LikeTable (uid) VALUES (10);
 TRUNCATE TABLE HasFriend CASCADE;
-
 INSERT INTO HasFriend (uid, fid) VALUES (1, 10);
 INSERT INTO HasFriend (uid, fid) VALUES (1, 9);
 INSERT INTO HasFriend (uid, fid) VALUES (2, 8);
@@ -247,69 +557,458 @@ INSERT INTO HasFriend (uid, fid) VALUES (9, 8);
 INSERT INTO HasFriend (uid, fid) VALUES (9, 9);
 INSERT INTO HasFriend (uid, fid) VALUES (10, 10);
 INSERT INTO HasFriend (uid, fid) VALUES (10, 1);
-
--- Photo has album
 TRUNCATE TABLE HasAlbum CASCADE;
-
 INSERT INTO HasAlbum (uid, aid) VALUES (1, 1);
-INSERT INTO HasAlbum (uid, aid) VALUES (2, 2);
-INSERT INTO HasAlbum (uid, aid) VALUES (3, 3);
-INSERT INTO HasAlbum (uid, aid) VALUES (4, 4);
-INSERT INTO HasAlbum (uid, aid) VALUES (5, 5);
-INSERT INTO HasAlbum (uid, aid) VALUES (6, 6);
-INSERT INTO HasAlbum (uid, aid) VALUES (7, 7);
-INSERT INTO HasAlbum (uid, aid) VALUES (8, 8);
-INSERT INTO HasAlbum (uid, aid) VALUES (9, 9);
-INSERT INTO HasAlbum (uid, aid) VALUES (10, 10);
-
+INSERT INTO HasAlbum (uid, aid) VALUES (1, 2);
+INSERT INTO HasAlbum (uid, aid) VALUES (2, 3);
+INSERT INTO HasAlbum (uid, aid) VALUES (2, 4);
+INSERT INTO HasAlbum (uid, aid) VALUES (3, 5);
+INSERT INTO HasAlbum (uid, aid) VALUES (3, 6);
+INSERT INTO HasAlbum (uid, aid) VALUES (4, 7);
+INSERT INTO HasAlbum (uid, aid) VALUES (4, 8);
+INSERT INTO HasAlbum (uid, aid) VALUES (5, 9);
+INSERT INTO HasAlbum (uid, aid) VALUES (5, 10);
+INSERT INTO HasAlbum (uid, aid) VALUES (6, 11);
+INSERT INTO HasAlbum (uid, aid) VALUES (6, 12);
+INSERT INTO HasAlbum (uid, aid) VALUES (7, 13);
+INSERT INTO HasAlbum (uid, aid) VALUES (7, 14);
+INSERT INTO HasAlbum (uid, aid) VALUES (8, 15);
+INSERT INTO HasAlbum (uid, aid) VALUES (8, 16);
+INSERT INTO HasAlbum (uid, aid) VALUES (9, 17);
+INSERT INTO HasAlbum (uid, aid) VALUES (9, 18);
+INSERT INTO HasAlbum (uid, aid) VALUES (10, 19);
+INSERT INTO HasAlbum (uid, aid) VALUES (10, 20);
 TRUNCATE TABLE Contains CASCADE;
-
 INSERT INTO Contains (aid, pid) VALUES (1, 1);
+INSERT INTO Contains (aid, pid) VALUES (1, 21);
 INSERT INTO Contains (aid, pid) VALUES (2, 2);
+INSERT INTO Contains (aid, pid) VALUES (2, 22);
 INSERT INTO Contains (aid, pid) VALUES (3, 3);
+INSERT INTO Contains (aid, pid) VALUES (3, 23);
 INSERT INTO Contains (aid, pid) VALUES (4, 4);
+INSERT INTO Contains (aid, pid) VALUES (4, 24);
 INSERT INTO Contains (aid, pid) VALUES (5, 5);
+INSERT INTO Contains (aid, pid) VALUES (5, 25);
 INSERT INTO Contains (aid, pid) VALUES (6, 6);
+INSERT INTO Contains (aid, pid) VALUES (6, 26);
 INSERT INTO Contains (aid, pid) VALUES (7, 7);
+INSERT INTO Contains (aid, pid) VALUES (7, 27);
 INSERT INTO Contains (aid, pid) VALUES (8, 8);
+INSERT INTO Contains (aid, pid) VALUES (8, 28);
 INSERT INTO Contains (aid, pid) VALUES (9, 9);
+INSERT INTO Contains (aid, pid) VALUES (9, 29);
 INSERT INTO Contains (aid, pid) VALUES (10, 10);
-
+INSERT INTO Contains (aid, pid) VALUES (10, 30);
+INSERT INTO Contains (aid, pid) VALUES (11, 11);
+INSERT INTO Contains (aid, pid) VALUES (11, 31);
+INSERT INTO Contains (aid, pid) VALUES (12, 12);
+INSERT INTO Contains (aid, pid) VALUES (12, 32);
+INSERT INTO Contains (aid, pid) VALUES (13, 13);
+INSERT INTO Contains (aid, pid) VALUES (13, 33);
+INSERT INTO Contains (aid, pid) VALUES (14, 14);
+INSERT INTO Contains (aid, pid) VALUES (14, 34);
+INSERT INTO Contains (aid, pid) VALUES (15, 15);
+INSERT INTO Contains (aid, pid) VALUES (15, 35);
+INSERT INTO Contains (aid, pid) VALUES (16, 16);
+INSERT INTO Contains (aid, pid) VALUES (16, 36);
+INSERT INTO Contains (aid, pid) VALUES (17, 17);
+INSERT INTO Contains (aid, pid) VALUES (17, 37);
+INSERT INTO Contains (aid, pid) VALUES (18, 18);
+INSERT INTO Contains (aid, pid) VALUES (18, 38);
+INSERT INTO Contains (aid, pid) VALUES (19, 19);
+INSERT INTO Contains (aid, pid) VALUES (19, 39);
+INSERT INTO Contains (aid, pid) VALUES (20, 20);
+INSERT INTO Contains (aid, pid) VALUES (20, 40);
 TRUNCATE TABLE HasLike CASCADE;
-
 INSERT INTO HasLike (pid, lid) VALUES (1, 1);
 INSERT INTO HasLike (pid, lid) VALUES (1, 2);
-INSERT INTO HasLike (pid, lid) VALUES (1, 3);
-INSERT INTO HasLike (pid, lid) VALUES (1, 4);
-INSERT INTO HasLike (pid, lid) VALUES (2, 5);
+INSERT INTO HasLike (pid, lid) VALUES (2, 3);
+INSERT INTO HasLike (pid, lid) VALUES (2, 4);
+INSERT INTO HasLike (pid, lid) VALUES (3, 5);
 INSERT INTO HasLike (pid, lid) VALUES (3, 6);
 INSERT INTO HasLike (pid, lid) VALUES (4, 7);
-INSERT INTO HasLike (pid, lid) VALUES (5, 8);
-INSERT INTO HasLike (pid, lid) VALUES (6, 9);
-INSERT INTO HasLike (pid, lid) VALUES (7, 10);
-
+INSERT INTO HasLike (pid, lid) VALUES (4, 8);
+INSERT INTO HasLike (pid, lid) VALUES (5, 9);
+INSERT INTO HasLike (pid, lid) VALUES (5, 10);
+INSERT INTO HasLike (pid, lid) VALUES (6, 11);
+INSERT INTO HasLike (pid, lid) VALUES (6, 12);
+INSERT INTO HasLike (pid, lid) VALUES (7, 13);
+INSERT INTO HasLike (pid, lid) VALUES (7, 14);
+INSERT INTO HasLike (pid, lid) VALUES (8, 15);
+INSERT INTO HasLike (pid, lid) VALUES (8, 16);
+INSERT INTO HasLike (pid, lid) VALUES (9, 17);
+INSERT INTO HasLike (pid, lid) VALUES (9, 18);
+INSERT INTO HasLike (pid, lid) VALUES (10, 19);
+INSERT INTO HasLike (pid, lid) VALUES (10, 20);
+INSERT INTO HasLike (pid, lid) VALUES (11, 21);
+INSERT INTO HasLike (pid, lid) VALUES (11, 22);
+INSERT INTO HasLike (pid, lid) VALUES (12, 23);
+INSERT INTO HasLike (pid, lid) VALUES (12, 24);
+INSERT INTO HasLike (pid, lid) VALUES (13, 25);
+INSERT INTO HasLike (pid, lid) VALUES (13, 26);
+INSERT INTO HasLike (pid, lid) VALUES (14, 27);
+INSERT INTO HasLike (pid, lid) VALUES (14, 28);
+INSERT INTO HasLike (pid, lid) VALUES (15, 29);
+INSERT INTO HasLike (pid, lid) VALUES (15, 30);
+INSERT INTO HasLike (pid, lid) VALUES (16, 31);
+INSERT INTO HasLike (pid, lid) VALUES (16, 32);
+INSERT INTO HasLike (pid, lid) VALUES (17, 33);
+INSERT INTO HasLike (pid, lid) VALUES (17, 34);
+INSERT INTO HasLike (pid, lid) VALUES (18, 35);
+INSERT INTO HasLike (pid, lid) VALUES (18, 36);
+INSERT INTO HasLike (pid, lid) VALUES (19, 37);
+INSERT INTO HasLike (pid, lid) VALUES (19, 38);
+INSERT INTO HasLike (pid, lid) VALUES (20, 39);
+INSERT INTO HasLike (pid, lid) VALUES (20, 40);
+INSERT INTO HasLike (pid, lid) VALUES (21, 41);
+INSERT INTO HasLike (pid, lid) VALUES (21, 42);
+INSERT INTO HasLike (pid, lid) VALUES (22, 43);
+INSERT INTO HasLike (pid, lid) VALUES (22, 44);
+INSERT INTO HasLike (pid, lid) VALUES (23, 45);
+INSERT INTO HasLike (pid, lid) VALUES (23, 46);
+INSERT INTO HasLike (pid, lid) VALUES (24, 47);
+INSERT INTO HasLike (pid, lid) VALUES (24, 48);
+INSERT INTO HasLike (pid, lid) VALUES (25, 49);
+INSERT INTO HasLike (pid, lid) VALUES (25, 50);
+INSERT INTO HasLike (pid, lid) VALUES (26, 51);
+INSERT INTO HasLike (pid, lid) VALUES (26, 52);
+INSERT INTO HasLike (pid, lid) VALUES (27, 53);
+INSERT INTO HasLike (pid, lid) VALUES (27, 54);
+INSERT INTO HasLike (pid, lid) VALUES (28, 55);
+INSERT INTO HasLike (pid, lid) VALUES (28, 56);
+INSERT INTO HasLike (pid, lid) VALUES (29, 57);
+INSERT INTO HasLike (pid, lid) VALUES (29, 58);
+INSERT INTO HasLike (pid, lid) VALUES (30, 59);
+INSERT INTO HasLike (pid, lid) VALUES (30, 60);
+INSERT INTO HasLike (pid, lid) VALUES (31, 61);
+INSERT INTO HasLike (pid, lid) VALUES (31, 62);
+INSERT INTO HasLike (pid, lid) VALUES (32, 63);
+INSERT INTO HasLike (pid, lid) VALUES (32, 64);
+INSERT INTO HasLike (pid, lid) VALUES (33, 65);
+INSERT INTO HasLike (pid, lid) VALUES (33, 66);
+INSERT INTO HasLike (pid, lid) VALUES (34, 67);
+INSERT INTO HasLike (pid, lid) VALUES (34, 68);
+INSERT INTO HasLike (pid, lid) VALUES (35, 69);
+INSERT INTO HasLike (pid, lid) VALUES (35, 70);
+INSERT INTO HasLike (pid, lid) VALUES (36, 71);
+INSERT INTO HasLike (pid, lid) VALUES (36, 72);
+INSERT INTO HasLike (pid, lid) VALUES (37, 73);
+INSERT INTO HasLike (pid, lid) VALUES (37, 74);
+INSERT INTO HasLike (pid, lid) VALUES (38, 75);
+INSERT INTO HasLike (pid, lid) VALUES (38, 76);
+INSERT INTO HasLike (pid, lid) VALUES (39, 77);
+INSERT INTO HasLike (pid, lid) VALUES (39, 78);
+INSERT INTO HasLike (pid, lid) VALUES (40, 79);
+INSERT INTO HasLike (pid, lid) VALUES (40, 80);
 TRUNCATE TABLE HasTag CASCADE;
-
 INSERT INTO HasTag (pid, tid) VALUES (1, 1);
 INSERT INTO HasTag (pid, tid) VALUES (1, 2);
 INSERT INTO HasTag (pid, tid) VALUES (1, 3);
 INSERT INTO HasTag (pid, tid) VALUES (1, 4);
 INSERT INTO HasTag (pid, tid) VALUES (2, 5);
-INSERT INTO HasTag (pid, tid) VALUES (3, 6);
-INSERT INTO HasTag (pid, tid) VALUES (4, 7);
-INSERT INTO HasTag (pid, tid) VALUES (5, 8);
-INSERT INTO HasTag (pid, tid) VALUES (6, 9);
-INSERT INTO HasTag (pid, tid) VALUES (7, 10);
-
+INSERT INTO HasTag (pid, tid) VALUES (2, 6);
+INSERT INTO HasTag (pid, tid) VALUES (2, 7);
+INSERT INTO HasTag (pid, tid) VALUES (2, 8);
+INSERT INTO HasTag (pid, tid) VALUES (3, 9);
+INSERT INTO HasTag (pid, tid) VALUES (3, 10);
+INSERT INTO HasTag (pid, tid) VALUES (3, 11);
+INSERT INTO HasTag (pid, tid) VALUES (3, 12);
+INSERT INTO HasTag (pid, tid) VALUES (4, 13);
+INSERT INTO HasTag (pid, tid) VALUES (4, 14);
+INSERT INTO HasTag (pid, tid) VALUES (4, 15);
+INSERT INTO HasTag (pid, tid) VALUES (4, 16);
+INSERT INTO HasTag (pid, tid) VALUES (5, 17);
+INSERT INTO HasTag (pid, tid) VALUES (5, 18);
+INSERT INTO HasTag (pid, tid) VALUES (5, 19);
+INSERT INTO HasTag (pid, tid) VALUES (5, 20);
+INSERT INTO HasTag (pid, tid) VALUES (6, 21);
+INSERT INTO HasTag (pid, tid) VALUES (6, 22);
+INSERT INTO HasTag (pid, tid) VALUES (6, 23);
+INSERT INTO HasTag (pid, tid) VALUES (6, 24);
+INSERT INTO HasTag (pid, tid) VALUES (7, 25);
+INSERT INTO HasTag (pid, tid) VALUES (7, 26);
+INSERT INTO HasTag (pid, tid) VALUES (7, 27);
+INSERT INTO HasTag (pid, tid) VALUES (7, 28);
+INSERT INTO HasTag (pid, tid) VALUES (8, 29);
+INSERT INTO HasTag (pid, tid) VALUES (8, 30);
+INSERT INTO HasTag (pid, tid) VALUES (8, 31);
+INSERT INTO HasTag (pid, tid) VALUES (8, 32);
+INSERT INTO HasTag (pid, tid) VALUES (9, 33);
+INSERT INTO HasTag (pid, tid) VALUES (9, 34);
+INSERT INTO HasTag (pid, tid) VALUES (9, 35);
+INSERT INTO HasTag (pid, tid) VALUES (9, 36);
+INSERT INTO HasTag (pid, tid) VALUES (10, 37);
+INSERT INTO HasTag (pid, tid) VALUES (10, 38);
+INSERT INTO HasTag (pid, tid) VALUES (10, 39);
+INSERT INTO HasTag (pid, tid) VALUES (10, 40);
+INSERT INTO HasTag (pid, tid) VALUES (11, 41);
+INSERT INTO HasTag (pid, tid) VALUES (11, 42);
+INSERT INTO HasTag (pid, tid) VALUES (11, 43);
+INSERT INTO HasTag (pid, tid) VALUES (11, 44);
+INSERT INTO HasTag (pid, tid) VALUES (12, 45);
+INSERT INTO HasTag (pid, tid) VALUES (12, 46);
+INSERT INTO HasTag (pid, tid) VALUES (12, 47);
+INSERT INTO HasTag (pid, tid) VALUES (12, 48);
+INSERT INTO HasTag (pid, tid) VALUES (13, 49);
+INSERT INTO HasTag (pid, tid) VALUES (13, 50);
+INSERT INTO HasTag (pid, tid) VALUES (13, 51);
+INSERT INTO HasTag (pid, tid) VALUES (13, 52);
+INSERT INTO HasTag (pid, tid) VALUES (14, 53);
+INSERT INTO HasTag (pid, tid) VALUES (14, 54);
+INSERT INTO HasTag (pid, tid) VALUES (14, 55);
+INSERT INTO HasTag (pid, tid) VALUES (14, 56);
+INSERT INTO HasTag (pid, tid) VALUES (15, 57);
+INSERT INTO HasTag (pid, tid) VALUES (15, 58);
+INSERT INTO HasTag (pid, tid) VALUES (15, 59);
+INSERT INTO HasTag (pid, tid) VALUES (15, 60);
+INSERT INTO HasTag (pid, tid) VALUES (16, 61);
+INSERT INTO HasTag (pid, tid) VALUES (16, 62);
+INSERT INTO HasTag (pid, tid) VALUES (16, 63);
+INSERT INTO HasTag (pid, tid) VALUES (16, 64);
+INSERT INTO HasTag (pid, tid) VALUES (17, 65);
+INSERT INTO HasTag (pid, tid) VALUES (17, 66);
+INSERT INTO HasTag (pid, tid) VALUES (17, 67);
+INSERT INTO HasTag (pid, tid) VALUES (17, 68);
+INSERT INTO HasTag (pid, tid) VALUES (18, 69);
+INSERT INTO HasTag (pid, tid) VALUES (18, 70);
+INSERT INTO HasTag (pid, tid) VALUES (18, 71);
+INSERT INTO HasTag (pid, tid) VALUES (18, 72);
+INSERT INTO HasTag (pid, tid) VALUES (19, 73);
+INSERT INTO HasTag (pid, tid) VALUES (19, 74);
+INSERT INTO HasTag (pid, tid) VALUES (19, 75);
+INSERT INTO HasTag (pid, tid) VALUES (19, 76);
+INSERT INTO HasTag (pid, tid) VALUES (20, 77);
+INSERT INTO HasTag (pid, tid) VALUES (20, 78);
+INSERT INTO HasTag (pid, tid) VALUES (20, 79);
+INSERT INTO HasTag (pid, tid) VALUES (20, 80);
+INSERT INTO HasTag (pid, tid) VALUES (21, 81);
+INSERT INTO HasTag (pid, tid) VALUES (21, 82);
+INSERT INTO HasTag (pid, tid) VALUES (21, 83);
+INSERT INTO HasTag (pid, tid) VALUES (21, 84);
+INSERT INTO HasTag (pid, tid) VALUES (22, 85);
+INSERT INTO HasTag (pid, tid) VALUES (22, 86);
+INSERT INTO HasTag (pid, tid) VALUES (22, 87);
+INSERT INTO HasTag (pid, tid) VALUES (22, 88);
+INSERT INTO HasTag (pid, tid) VALUES (23, 89);
+INSERT INTO HasTag (pid, tid) VALUES (23, 90);
+INSERT INTO HasTag (pid, tid) VALUES (23, 91);
+INSERT INTO HasTag (pid, tid) VALUES (23, 92);
+INSERT INTO HasTag (pid, tid) VALUES (24, 93);
+INSERT INTO HasTag (pid, tid) VALUES (24, 94);
+INSERT INTO HasTag (pid, tid) VALUES (24, 95);
+INSERT INTO HasTag (pid, tid) VALUES (24, 96);
+INSERT INTO HasTag (pid, tid) VALUES (25, 97);
+INSERT INTO HasTag (pid, tid) VALUES (25, 98);
+INSERT INTO HasTag (pid, tid) VALUES (25, 99);
+INSERT INTO HasTag (pid, tid) VALUES (25, 100);
+INSERT INTO HasTag (pid, tid) VALUES (26, 101);
+INSERT INTO HasTag (pid, tid) VALUES (26, 102);
+INSERT INTO HasTag (pid, tid) VALUES (26, 103);
+INSERT INTO HasTag (pid, tid) VALUES (26, 104);
+INSERT INTO HasTag (pid, tid) VALUES (27, 105);
+INSERT INTO HasTag (pid, tid) VALUES (27, 106);
+INSERT INTO HasTag (pid, tid) VALUES (27, 107);
+INSERT INTO HasTag (pid, tid) VALUES (27, 108);
+INSERT INTO HasTag (pid, tid) VALUES (28, 109);
+INSERT INTO HasTag (pid, tid) VALUES (28, 110);
+INSERT INTO HasTag (pid, tid) VALUES (28, 111);
+INSERT INTO HasTag (pid, tid) VALUES (28, 112);
+INSERT INTO HasTag (pid, tid) VALUES (29, 113);
+INSERT INTO HasTag (pid, tid) VALUES (29, 114);
+INSERT INTO HasTag (pid, tid) VALUES (29, 115);
+INSERT INTO HasTag (pid, tid) VALUES (29, 116);
+INSERT INTO HasTag (pid, tid) VALUES (30, 117);
+INSERT INTO HasTag (pid, tid) VALUES (30, 118);
+INSERT INTO HasTag (pid, tid) VALUES (30, 119);
+INSERT INTO HasTag (pid, tid) VALUES (30, 120);
+INSERT INTO HasTag (pid, tid) VALUES (31, 121);
+INSERT INTO HasTag (pid, tid) VALUES (31, 122);
+INSERT INTO HasTag (pid, tid) VALUES (31, 123);
+INSERT INTO HasTag (pid, tid) VALUES (31, 124);
+INSERT INTO HasTag (pid, tid) VALUES (32, 125);
+INSERT INTO HasTag (pid, tid) VALUES (32, 126);
+INSERT INTO HasTag (pid, tid) VALUES (32, 127);
+INSERT INTO HasTag (pid, tid) VALUES (32, 128);
+INSERT INTO HasTag (pid, tid) VALUES (33, 129);
+INSERT INTO HasTag (pid, tid) VALUES (33, 130);
+INSERT INTO HasTag (pid, tid) VALUES (33, 131);
+INSERT INTO HasTag (pid, tid) VALUES (33, 132);
+INSERT INTO HasTag (pid, tid) VALUES (34, 133);
+INSERT INTO HasTag (pid, tid) VALUES (34, 134);
+INSERT INTO HasTag (pid, tid) VALUES (34, 135);
+INSERT INTO HasTag (pid, tid) VALUES (34, 136);
+INSERT INTO HasTag (pid, tid) VALUES (35, 137);
+INSERT INTO HasTag (pid, tid) VALUES (35, 138);
+INSERT INTO HasTag (pid, tid) VALUES (35, 139);
+INSERT INTO HasTag (pid, tid) VALUES (35, 140);
+INSERT INTO HasTag (pid, tid) VALUES (36, 141);
+INSERT INTO HasTag (pid, tid) VALUES (36, 142);
+INSERT INTO HasTag (pid, tid) VALUES (36, 143);
+INSERT INTO HasTag (pid, tid) VALUES (36, 144);
+INSERT INTO HasTag (pid, tid) VALUES (37, 145);
+INSERT INTO HasTag (pid, tid) VALUES (37, 146);
+INSERT INTO HasTag (pid, tid) VALUES (37, 147);
+INSERT INTO HasTag (pid, tid) VALUES (37, 148);
+INSERT INTO HasTag (pid, tid) VALUES (38, 149);
+INSERT INTO HasTag (pid, tid) VALUES (38, 150);
+INSERT INTO HasTag (pid, tid) VALUES (38, 151);
+INSERT INTO HasTag (pid, tid) VALUES (38, 152);
+INSERT INTO HasTag (pid, tid) VALUES (39, 153);
+INSERT INTO HasTag (pid, tid) VALUES (39, 154);
+INSERT INTO HasTag (pid, tid) VALUES (39, 155);
+INSERT INTO HasTag (pid, tid) VALUES (39, 156);
+INSERT INTO HasTag (pid, tid) VALUES (40, 157);
+INSERT INTO HasTag (pid, tid) VALUES (40, 158);
+INSERT INTO HasTag (pid, tid) VALUES (40, 159);
+INSERT INTO HasTag (pid, tid) VALUES (40, 160);
 TRUNCATE TABLE HasComment CASCADE;
-
 INSERT INTO HasComment (pid, cid) VALUES (1, 1);
 INSERT INTO HasComment (pid, cid) VALUES (1, 2);
 INSERT INTO HasComment (pid, cid) VALUES (1, 3);
-INSERT INTO HasComment (pid, cid) VALUES (1, 4);
+INSERT INTO HasComment (pid, cid) VALUES (2, 4);
 INSERT INTO HasComment (pid, cid) VALUES (2, 5);
-INSERT INTO HasComment (pid, cid) VALUES (3, 6);
-INSERT INTO HasComment (pid, cid) VALUES (4, 7);
-INSERT INTO HasComment (pid, cid) VALUES (5, 8);
-INSERT INTO HasComment (pid, cid) VALUES (6, 9);
-INSERT INTO HasComment (pid, cid) VALUES (7, 10);
+INSERT INTO HasComment (pid, cid) VALUES (2, 6);
+INSERT INTO HasComment (pid, cid) VALUES (3, 7);
+INSERT INTO HasComment (pid, cid) VALUES (3, 8);
+INSERT INTO HasComment (pid, cid) VALUES (3, 9);
+INSERT INTO HasComment (pid, cid) VALUES (4, 10);
+INSERT INTO HasComment (pid, cid) VALUES (4, 11);
+INSERT INTO HasComment (pid, cid) VALUES (4, 12);
+INSERT INTO HasComment (pid, cid) VALUES (5, 13);
+INSERT INTO HasComment (pid, cid) VALUES (5, 14);
+INSERT INTO HasComment (pid, cid) VALUES (5, 15);
+INSERT INTO HasComment (pid, cid) VALUES (6, 16);
+INSERT INTO HasComment (pid, cid) VALUES (6, 17);
+INSERT INTO HasComment (pid, cid) VALUES (6, 18);
+INSERT INTO HasComment (pid, cid) VALUES (7, 19);
+INSERT INTO HasComment (pid, cid) VALUES (7, 20);
+INSERT INTO HasComment (pid, cid) VALUES (7, 21);
+INSERT INTO HasComment (pid, cid) VALUES (8, 22);
+INSERT INTO HasComment (pid, cid) VALUES (8, 23);
+INSERT INTO HasComment (pid, cid) VALUES (8, 24);
+INSERT INTO HasComment (pid, cid) VALUES (9, 25);
+INSERT INTO HasComment (pid, cid) VALUES (9, 26);
+INSERT INTO HasComment (pid, cid) VALUES (9, 27);
+INSERT INTO HasComment (pid, cid) VALUES (10, 28);
+INSERT INTO HasComment (pid, cid) VALUES (10, 29);
+INSERT INTO HasComment (pid, cid) VALUES (10, 30);
+INSERT INTO HasComment (pid, cid) VALUES (11, 31);
+INSERT INTO HasComment (pid, cid) VALUES (11, 32);
+INSERT INTO HasComment (pid, cid) VALUES (11, 33);
+INSERT INTO HasComment (pid, cid) VALUES (12, 34);
+INSERT INTO HasComment (pid, cid) VALUES (12, 35);
+INSERT INTO HasComment (pid, cid) VALUES (12, 36);
+INSERT INTO HasComment (pid, cid) VALUES (13, 37);
+INSERT INTO HasComment (pid, cid) VALUES (13, 38);
+INSERT INTO HasComment (pid, cid) VALUES (13, 39);
+INSERT INTO HasComment (pid, cid) VALUES (14, 41);
+INSERT INTO HasComment (pid, cid) VALUES (14, 42);
+INSERT INTO HasComment (pid, cid) VALUES (14, 43);
+INSERT INTO HasComment (pid, cid) VALUES (15, 44);
+INSERT INTO HasComment (pid, cid) VALUES (15, 45);
+INSERT INTO HasComment (pid, cid) VALUES (15, 46);
+INSERT INTO HasComment (pid, cid) VALUES (16, 47);
+INSERT INTO HasComment (pid, cid) VALUES (16, 48);
+INSERT INTO HasComment (pid, cid) VALUES (16, 49);
+INSERT INTO HasComment (pid, cid) VALUES (17, 50);
+INSERT INTO HasComment (pid, cid) VALUES (17, 51);
+INSERT INTO HasComment (pid, cid) VALUES (17, 52);
+INSERT INTO HasComment (pid, cid) VALUES (18, 53);
+INSERT INTO HasComment (pid, cid) VALUES (18, 54);
+INSERT INTO HasComment (pid, cid) VALUES (18, 55);
+INSERT INTO HasComment (pid, cid) VALUES (19, 56);
+INSERT INTO HasComment (pid, cid) VALUES (19, 57);
+INSERT INTO HasComment (pid, cid) VALUES (19, 58);
+INSERT INTO HasComment (pid, cid) VALUES (20, 59);
+INSERT INTO HasComment (pid, cid) VALUES (20, 60);
+INSERT INTO HasComment (pid, cid) VALUES (20, 61);
+INSERT INTO HasComment (pid, cid) VALUES (21, 62);
+INSERT INTO HasComment (pid, cid) VALUES (21, 63);
+INSERT INTO HasComment (pid, cid) VALUES (21, 64);
+INSERT INTO HasComment (pid, cid) VALUES (22, 65);
+INSERT INTO HasComment (pid, cid) VALUES (22, 66);
+INSERT INTO HasComment (pid, cid) VALUES (22, 67);
+INSERT INTO HasComment (pid, cid) VALUES (23, 68);
+INSERT INTO HasComment (pid, cid) VALUES (23, 69);
+INSERT INTO HasComment (pid, cid) VALUES (23, 70);
+INSERT INTO HasComment (pid, cid) VALUES (24, 71);
+INSERT INTO HasComment (pid, cid) VALUES (24, 72);
+INSERT INTO HasComment (pid, cid) VALUES (24, 73);
+INSERT INTO HasComment (pid, cid) VALUES (25, 74);
+INSERT INTO HasComment (pid, cid) VALUES (25, 75);
+INSERT INTO HasComment (pid, cid) VALUES (25, 76);
+INSERT INTO HasComment (pid, cid) VALUES (26, 77);
+INSERT INTO HasComment (pid, cid) VALUES (26, 78);
+INSERT INTO HasComment (pid, cid) VALUES (26, 79);
+INSERT INTO HasComment (pid, cid) VALUES (17, 53);
+INSERT INTO HasComment (pid, cid) VALUES (17, 54);
+INSERT INTO HasComment (pid, cid) VALUES (17, 55);
+INSERT INTO HasComment (pid, cid) VALUES (18, 56);
+INSERT INTO HasComment (pid, cid) VALUES (18, 57);
+INSERT INTO HasComment (pid, cid) VALUES (18, 58);
+INSERT INTO HasComment (pid, cid) VALUES (19, 59);
+INSERT INTO HasComment (pid, cid) VALUES (19, 60);
+INSERT INTO HasComment (pid, cid) VALUES (19, 61);
+INSERT INTO HasComment (pid, cid) VALUES (20, 62);
+INSERT INTO HasComment (pid, cid) VALUES (20, 63);
+INSERT INTO HasComment (pid, cid) VALUES (20, 64);
+INSERT INTO HasComment (pid, cid) VALUES (21, 65);
+INSERT INTO HasComment (pid, cid) VALUES (21, 66);
+INSERT INTO HasComment (pid, cid) VALUES (21, 67);
+INSERT INTO HasComment (pid, cid) VALUES (22, 68);
+INSERT INTO HasComment (pid, cid) VALUES (22, 69);
+INSERT INTO HasComment (pid, cid) VALUES (22, 70);
+INSERT INTO HasComment (pid, cid) VALUES (23, 71);
+INSERT INTO HasComment (pid, cid) VALUES (23, 72);
+INSERT INTO HasComment (pid, cid) VALUES (23, 73);
+INSERT INTO HasComment (pid, cid) VALUES (24, 74);
+INSERT INTO HasComment (pid, cid) VALUES (24, 75);
+INSERT INTO HasComment (pid, cid) VALUES (24, 76);
+INSERT INTO HasComment (pid, cid) VALUES (25, 77);
+INSERT INTO HasComment (pid, cid) VALUES (25, 78);
+INSERT INTO HasComment (pid, cid) VALUES (25, 79);
+INSERT INTO HasComment (pid, cid) VALUES (26, 80);
+INSERT INTO HasComment (pid, cid) VALUES (26, 81);
+INSERT INTO HasComment (pid, cid) VALUES (26, 82);
+INSERT INTO HasComment (pid, cid) VALUES (27, 83);
+INSERT INTO HasComment (pid, cid) VALUES (27, 84);
+INSERT INTO HasComment (pid, cid) VALUES (27, 85);
+INSERT INTO HasComment (pid, cid) VALUES (28, 86);
+INSERT INTO HasComment (pid, cid) VALUES (28, 87);
+INSERT INTO HasComment (pid, cid) VALUES (28, 88);
+INSERT INTO HasComment (pid, cid) VALUES (29, 89);
+INSERT INTO HasComment (pid, cid) VALUES (29, 90);
+INSERT INTO HasComment (pid, cid) VALUES (29, 91);
+INSERT INTO HasComment (pid, cid) VALUES (30, 93);
+INSERT INTO HasComment (pid, cid) VALUES (30, 94);
+INSERT INTO HasComment (pid, cid) VALUES (30, 95);
+INSERT INTO HasComment (pid, cid) VALUES (31, 96);
+INSERT INTO HasComment (pid, cid) VALUES (31, 97);
+INSERT INTO HasComment (pid, cid) VALUES (31, 98);
+INSERT INTO HasComment (pid, cid) VALUES (32, 99);
+INSERT INTO HasComment (pid, cid) VALUES (32, 100);
+INSERT INTO HasComment (pid, cid) VALUES (32, 101);
+INSERT INTO HasComment (pid, cid) VALUES (33, 102);
+INSERT INTO HasComment (pid, cid) VALUES (33, 103);
+INSERT INTO HasComment (pid, cid) VALUES (33, 104);
+INSERT INTO HasComment (pid, cid) VALUES (34, 105);
+INSERT INTO HasComment (pid, cid) VALUES (34, 106);
+INSERT INTO HasComment (pid, cid) VALUES (34, 107);
+INSERT INTO HasComment (pid, cid) VALUES (35, 108);
+INSERT INTO HasComment (pid, cid) VALUES (35, 109);
+INSERT INTO HasComment (pid, cid) VALUES (35, 110);
+INSERT INTO HasComment (pid, cid) VALUES (36, 111);
+INSERT INTO HasComment (pid, cid) VALUES (36, 112);
+INSERT INTO HasComment (pid, cid) VALUES (36, 113);
+INSERT INTO HasComment (pid, cid) VALUES (37, 114);
+INSERT INTO HasComment (pid, cid) VALUES (37, 115);
+INSERT INTO HasComment (pid, cid) VALUES (37, 116);
+INSERT INTO HasComment (pid, cid) VALUES (38, 117);
+INSERT INTO HasComment (pid, cid) VALUES (38, 118);
+INSERT INTO HasComment (pid, cid) VALUES (38, 119);
+INSERT INTO HasComment (pid, cid) VALUES (39, 120);
+INSERT INTO HasComment (pid, cid) VALUES (39, 121);
+INSERT INTO HasComment (pid, cid) VALUES (39, 122);
+INSERT INTO HasComment (pid, cid) VALUES (40, 123);
+INSERT INTO HasComment (pid, cid) VALUES (40, 124);
+INSERT INTO HasComment (pid, cid) VALUES (40, 125);
