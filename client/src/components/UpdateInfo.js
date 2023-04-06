@@ -73,6 +73,7 @@ function UpdateInfo() {
 				boxShadow: "0 0 10px rgba(0,0,0,0.5)",
 				borderRadius: "10px",
 				padding: "20px",
+				maxHeight: "100%",
 			}}
 		>
 			<h1 style={{ maxWidth: "90%" }}>Update Info</h1>

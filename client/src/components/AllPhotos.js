@@ -37,6 +37,18 @@ function PhotoRow({ photo, onItemClick }) {
 			>
 				{photo.caption ? photo.caption : "Photo"}
 			</h3>
+			{user && (
+				<h7
+					style={{
+						display: "inline-block",
+						fontSize: "14px",
+						color: "#999",
+						padding: 3,
+					}}
+				>
+					By {user.fname} {user.lname}
+				</h7>
+			)}
 		</div>
 	);
 }

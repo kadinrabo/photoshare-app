@@ -1,16 +1,93 @@
 import React, { useEffect, useState } from "react";
-// import { fetchTagsYouMayAlsoLike } from "../api";
-import { fetchUniqueTagsByUid } from "../api";
+import { fetchPhotosMayLikeByUid, fetchUserByPid } from "../api";
+import Popup from "./Popup";
+import Photo from "./Photo";
+
+function PhotoRow({ photo, onItemClick }) {
+	const [user, setUser] = useState(null);
+
+	useEffect(() => {
+		async function fetchUser() {
+			const fetchedUser = await fetchUserByPid(photo.pid);
+			setUser(fetchedUser);
+		}
+		fetchUser();
+	}, []);
+
+	return (
+		<div
+			onClick={() => onItemClick(photo)}
+			style={{
+				padding: "0px",
+				cursor: "pointer",
+				transition: "background-color 0.2s ease-in-out",
+				borderRadius: "1px",
+				margin: "1px 0",
+			}}
+		>
+			<h5
+				style={{
+					display: "inline-block",
+					marginRight: "10px",
+					color: "#3478f6",
+					textDecoration: "none",
+					margin: 0,
+					padding: 0,
+				}}
+			>
+				{photo.caption ? photo.caption : "Photo"}
+			</h5>
+			{user && (
+				<h7
+					style={{
+						display: "inline-block",
+						fontSize: "14px",
+						color: "#999",
+						padding: 3,
+					}}
+				>
+					By {user.fname} {user.lname}
+				</h7>
+			)}
+		</div>
+	);
+}
+
+function Photos({ photos, onItemClick }) {
+	return (
+		<div style={{ maxHeight: "180px", overflowY: "auto" }}>
+			{photos.map((photo) => (
+				<PhotoRow key={photo.pid} photo={photo} onItemClick={onItemClick} />
+			))}
+		</div>
+	);
+}
 
 function YouMayAlsoLike() {
-	const [goodTags, setGoodTags] = useState([]);
+	const [photos, setPhotos] = useState([]);
+	const [showPopup, setShowPopup] = useState(false);
+	const [photo, setPhoto] = useState(null);
+
+	const handlePhotoClick = (photo) => {
+		setPhoto(photo);
+		setShowPopup(true);
+	};
+
+	const handleClosePopup = async () => {
+		const fetchedData = await fetchPhotosMayLikeByUid(
+			localStorage.getItem("uid")
+		);
+		setPhotos(fetchedData.photos);
+		setShowPopup(false);
+		setPhoto(null);
+	};
 
 	useEffect(() => {
 		async function fetchData() {
-			const fetchedData = await fetchUniqueTagsByUid(
+			const fetchedData = await fetchPhotosMayLikeByUid(
 				localStorage.getItem("uid")
 			);
-			setGoodTags(fetchedData.tags);
+			setPhotos(fetchedData.photos);
 		}
 		fetchData();
 	}, []);
@@ -18,7 +95,6 @@ function YouMayAlsoLike() {
 	return (
 		<>
 			<div
-				className="goodtags-container"
 				style={{
 					padding: "20px",
 					borderRadius: "10px",
@@ -26,39 +102,11 @@ function YouMayAlsoLike() {
 					backgroundColor: "white",
 				}}
 			>
-				<h2 style={{ maxWidth: "90%" }}>Tags You Might Like</h2>
-				{goodTags.map((tag) => (
-					<div className="tag" key={tag.tid}>
-						{tag.tag}
-					</div>
-				))}
-				<style jsx="true">{`
-					.goodtags-container {
-						display: flex;
-						flex-wrap: wrap;
-						justify-content: center;
-					}
-					.tag {
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						background-color: #fff;
-						border-radius: 8px;
-						box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
-							0 1px 3px rgba(0, 0, 0, 0.08);
-						color: #333;
-						font-size: 16px;
-						font-weight: bold;
-						height: 40px;
-						margin: 8px;
-						padding: 0 16px;
-						text-align: center;
-						text-transform: uppercase;
-						transform: translateY(-4px);
-						max-width: 90%;
-						word-wrap: break-word;
-					}
-				`}</style>
+				<h1>You May Also Like</h1>
+				<Photos photos={photos} onItemClick={handlePhotoClick} />
+				<Popup onClose={handleClosePopup} isOpen={showPopup}>
+					{photo && <Photo photo={photo} />}
+				</Popup>
 			</div>
 		</>
 	);

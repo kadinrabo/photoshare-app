@@ -5,6 +5,7 @@ import Albums from "./models/Albums";
 import Comments from "./models/Comments";
 import Tags from "./models/Tags";
 import HasFriend from "./models/HasFriend";
+import MayLikePhotos from "./models/MayLikePhotos";
 
 export async function fetchUsersBySearch(searchText) {
 	try {
@@ -348,6 +349,19 @@ export async function fetchUniqueTagsByUid(uid) {
 		const data = await response.json();
 		const tags = new Tags(data);
 		return tags;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+export async function fetchPhotosMayLikeByUid(uid) {
+	try {
+		const response = await fetch(
+			`http://localhost:8080/users/maylikeuid=${uid}`
+		);
+		const data = await response.json();
+		const photos = new MayLikePhotos(data);
+		return photos;
 	} catch (error) {
 		console.log(error);
 	}

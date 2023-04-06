@@ -57,6 +57,52 @@ exports.getRecsByUid = (req, res, next) => {
 	});
 };
 
+exports.getMayLikeByUid = (req, res, next) => {
+	const maylikeuid = req.params.maylikeuid;
+	const query = `
+	SELECT pt.*, COUNT(*) AS common_count
+	FROM PhotoTable pt
+	JOIN HasAlbum ha ON pt.aid = ha.aid
+	JOIN AlbumTable at ON at.aid = ha.aid
+	JOIN HasTag ht ON ht.pid = pt.pid
+	JOIN TagTable tt ON tt.tid = ht.tid
+	WHERE at.uid != $1 AND pt.pid IN (
+		SELECT pt2.pid
+		FROM PhotoTable pt2
+		JOIN HasTag ht2 ON ht2.pid = pt2.pid
+		JOIN TagTable tt2 ON tt2.tid = ht2.tid
+		WHERE tt2.tag IN (
+			SELECT tt3.tag
+			FROM (
+				SELECT ht3.tid, COUNT(*) AS cnt
+				FROM PhotoTable pt3
+				JOIN HasTag ht3 ON ht3.pid = pt3.pid
+				JOIN TagTable tt3 ON tt3.tid = ht3.tid
+				WHERE pt3.aid IN (
+					SELECT at2.aid
+					FROM AlbumTable at2
+					WHERE at2.uid = $1
+				)
+				GROUP BY ht3.tid
+				ORDER BY cnt DESC
+				LIMIT 5
+			) AS top_tags
+			JOIN TagTable tt3 ON tt3.tid = top_tags.tid
+			ORDER BY top_tags.cnt DESC
+		)
+	)
+	GROUP BY pt.pid
+	ORDER BY common_count DESC
+	LIMIT 5;
+	`;
+	client.query(query, [maylikeuid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
 exports.getUserHasLikeByPid = (req, res, next) => {
 	const pid = req.params.haslikepid;
 	const query = `
