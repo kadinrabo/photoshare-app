@@ -84,8 +84,6 @@ function UserAlbums({ user }) {
 	return (
 		<div
 			style={{
-				width: "200px",
-				height: "500",
 				padding: "20px",
 				borderRadius: "10px",
 				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",

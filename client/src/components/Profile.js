@@ -76,8 +76,6 @@ function Profile() {
 			<div
 				style={{
 					display: "flex",
-					flexWrap: "wrap",
-					justifyContent: "center",
 					gap: "20px",
 					padding: "20px",
 				}}
@@ -88,20 +86,40 @@ function Profile() {
 				<div style={{ flex: 1 }}>
 					{user && <UserAlbums user={user}></UserAlbums>}
 				</div>
-				<div style={{ flex: 1 }}>
+			</div>
+			<div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					justifyContent: "center",
+					gap: "20px",
+				}}
+			>
+				<div style={{ flex: 1, paddingLeft: "20px" }}>
 					<YouMayAlsoLike />
 				</div>
+				<div style={{ flex: 0.5 }}>
+					<UploadPhoto />
+				</div>
+				<div style={{ flex: 1.5, paddingRight: "20px" }}>
+					<UpdateInfo />
+				</div>
+			</div>
+			<div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					justifyContent: "center",
+					gap: "20px",
+					padding: "20px",
+				}}
+			>
 				<div style={{ flex: 1 }}>
 					<button onClick={handleOpenFollowersPopup}>Followers</button>
 					<button onClick={handleOpenFollowingPopup}>Following</button>
 					<button onClick={handleOpenRecsPopup}>Recommendations</button>
 				</div>
-				<div style={{ flex: 1 }}>
-					<UploadPhoto />
-				</div>
-				<div style={{ flex: 1 }}>
-					<UpdateInfo />
-				</div>
+
 				<div style={{ flex: 1 }}>
 					<button onClick={handleLogout}>Log Out</button>
 				</div>

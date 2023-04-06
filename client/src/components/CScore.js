@@ -34,6 +34,9 @@ function CScore() {
 						display: flex;
 						flex-wrap: wrap;
 						justify-content: center;
+						flex-direction: row;
+						height: auto;
+						max-width: 100%;
 					}
 					.top {
 						display: flex;

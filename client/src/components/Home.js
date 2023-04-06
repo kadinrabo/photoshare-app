@@ -12,7 +12,39 @@ function Home() {
 	return (
 		<>
 			<Navbar />
-			<h1 style={{ padding: "20px" }}> Home </h1>
+			<h1 style={{ padding: "20px" }}> Photoshare Home </h1>
+			<div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					justifyContent: "center",
+					gap: "20px",
+					padding: "20px",
+				}}
+			>
+				<div style={{ flex: 1 }}>
+					<TrendingTags />
+				</div>
+				<div style={{ flex: 1 }}>
+					<CScore />
+				</div>
+			</div>
+			<div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					justifyContent: "center",
+					gap: "20px",
+					padding: "20px",
+				}}
+			>
+				<div style={{ flex: 1 }}>
+					<AllAlbums />
+				</div>
+				<div style={{ flex: 1 }}>
+					<AllPhotos />
+				</div>
+			</div>
 			<div
 				style={{
 					display: "flex",
@@ -32,18 +64,6 @@ function Home() {
 						<SearchForTags />
 					</div>
 				)}
-				<div style={{ flex: 1 }}>
-					<TrendingTags />
-				</div>
-				<div style={{ flex: 1 }}>
-					<CScore />
-				</div>
-				<div style={{ flex: 1 }}>
-					<AllAlbums />
-				</div>
-				<div style={{ flex: 1 }}>
-					<AllPhotos />
-				</div>
 			</div>
 		</>
 	);

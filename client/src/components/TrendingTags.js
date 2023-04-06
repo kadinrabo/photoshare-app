@@ -34,6 +34,12 @@ function TrendingTags() {
 						display: flex;
 						flex-wrap: wrap;
 						justify-content: center;
+						align-items: center;
+						flex-direction: row;
+						max-width: 100%;
+						height: fit-content;
+						min-width: 300px;
+						margin: 0 auto;
 					}
 					.tag {
 						display: flex;
@@ -52,7 +58,6 @@ function TrendingTags() {
 						text-align: center;
 						text-transform: uppercase;
 						transform: translateY(-4px);
-						max-width: 90%;
 						word-wrap: break-word;
 					}
 				`}</style>

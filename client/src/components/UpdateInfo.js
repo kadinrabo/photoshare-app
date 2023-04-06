@@ -69,13 +69,10 @@ function UpdateInfo() {
 	return (
 		<div
 			style={{
-				background: "white",
+				display: "inline-block",
+				boxShadow: "0 0 10px rgba(0,0,0,0.5)",
 				borderRadius: "10px",
-				boxShadow: "0px 2px 6px rgba(0, 0, 0, 0.5)",
 				padding: "20px",
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
 			}}
 		>
 			<h1 style={{ maxWidth: "90%" }}>Update Info</h1>
