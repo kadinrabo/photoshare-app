@@ -1,6 +1,5 @@
 const client = require("../util/database");
 
-// Handler for http://localhost:8080/friends
 exports.getAllFriends = (req, res, next) => {
 	client.query("SELECT * FROM friendtable", (err, result) => {
 		if (err) {
@@ -11,7 +10,6 @@ exports.getAllFriends = (req, res, next) => {
 };
 
 exports.addFriend = (req, res, next) => {
-	// fid is the id of the person being friended
 	const { fid, uid } = req.body;
 	client.query(
 		"INSERT INTO friendtable (fid) VALUES ($1) ON CONFLICT (fid) DO NOTHING",

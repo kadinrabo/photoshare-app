@@ -1,6 +1,5 @@
 const client = require("../util/database");
 
-// Handler for http://localhost:8080/photos
 exports.getAllPhotos = (req, res, next) => {
 	client.query("SELECT * FROM phototable", (err, result) => {
 		if (err) {
@@ -78,7 +77,6 @@ exports.createNewPhoto = (req, res, next) => {
 
 exports.deletePhotoByPid = (req, res, next) => {
 	const pid = req.params.pid;
-	// DELETE COMMENTS
 	client.query(
 		"DELETE FROM hascomment WHERE pid = $1 RETURNING cid",
 		[pid],
@@ -96,7 +94,6 @@ exports.deletePhotoByPid = (req, res, next) => {
 			}
 		}
 	);
-	// DELETE TAGS
 	client.query(
 		"DELETE FROM hastag WHERE pid = $1 RETURNING tid",
 		[pid],
@@ -114,7 +111,6 @@ exports.deletePhotoByPid = (req, res, next) => {
 			}
 		}
 	);
-	// DELETE LIKES
 	client.query(
 		"DELETE FROM haslike WHERE pid = $1 RETURNING lid",
 		[pid],
@@ -132,7 +128,6 @@ exports.deletePhotoByPid = (req, res, next) => {
 			}
 		}
 	);
-	// DELETE PHOTO AND FROM ALBUM
 	client.query(
 		"DELETE FROM phototable WHERE pid = $1 RETURNING aid",
 		[pid],
@@ -157,11 +152,9 @@ exports.deletePhotoByPid = (req, res, next) => {
 	});
 };
 
-// Handler for http://localhost:8080/photos/tag
 exports.getPhotosByTag = (req, res, next) => {
 	const tag = req.params.tag;
 
-	// Check if tag is in the form 'tag'
 	if (tag.split(",").length === 1) {
 		const search = "%" + "#" + req.params.tag + "%";
 		const query = `
@@ -176,12 +169,9 @@ exports.getPhotosByTag = (req, res, next) => {
 			}
 			res.json(result.rows);
 		});
-	}
-	// Check if tag is in the form 'tag1,tag2,tag3'
-	else if (tag.split(",").length > 1) {
-		const tags = tag.split(","); // Split the tag variable into an array of tags
-		const placeholders = tags.map((t, i) => `$${i + 1}`).join(","); // Create an array of placeholders for the query
-		const search = tags.map((t) => "%" + "#" + t.trim() + "%"); // Create an array of search strings
+	} else if (tag.split(",").length > 1) {
+		const tags = tag.split(",");
+		const search = tags.map((t) => "%" + "#" + t.trim() + "%");
 		const query = `
     SELECT * FROM phototable WHERE pid IN (
       SELECT pid FROM hastag WHERE tid IN (

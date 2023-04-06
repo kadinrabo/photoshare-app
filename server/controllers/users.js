@@ -1,6 +1,5 @@
 const client = require("../util/database");
 
-// Handler for http://localhost:8080/users
 exports.getUsersByCScore = (req, res, next) => {
 	const query = `
 		SELECT usertable.* FROM usertable
@@ -138,9 +137,7 @@ exports.getUsersBySearch = (req, res, next) => {
 			}
 			res.json(result.rows);
 		});
-	}
-	// Check if the search parameter is an email
-	else if (/^\S+@\S+\.\S+$/.test(search)) {
+	} else if (/^\S+@\S+\.\S+$/.test(search)) {
 		const query = `
         SELECT *
         FROM usertable
@@ -152,9 +149,7 @@ exports.getUsersBySearch = (req, res, next) => {
 			}
 			res.json(result.rows);
 		});
-	}
-	// Otherwise, treat the search parameter as regular text
-	else {
+	} else {
 		const query = `
         SELECT * FROM usertable WHERE fname ILIKE '%' || $1 || '%' OR lname ILIKE '%' || $1 || '%' OR concat(fname, ' ', lname) ILIKE '%' || $1 || '%';
       `;
@@ -167,7 +162,6 @@ exports.getUsersBySearch = (req, res, next) => {
 	}
 };
 
-// Handler for http://localhost:8080/users/
 exports.createNewUser = (req, res, next) => {
 	const { email, fname, lname, pass, dob, gender, home } = req.body;
 	client.query(

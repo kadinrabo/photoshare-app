@@ -1,6 +1,5 @@
 const client = require("../util/database");
 
-// Handler for http://localhost:8080/albums
 exports.getAllAlbums = (req, res, next) => {
 	client.query("SELECT * FROM albumtable", (err, result) => {
 		if (err) {

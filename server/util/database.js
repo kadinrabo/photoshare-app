@@ -1,4 +1,3 @@
-// Create the client for interactions with the postgres database
 const { Client } = require("pg");
 
 const client = new Client({

@@ -1,7 +1,6 @@
 const controller = require("../controllers/users");
 const router = require("express").Router();
 
-// /users
 router.get("/", controller.getUsersByCScore);
 router.get("/?uid=:uid", controller.getRecsByUid);
 router.get("/?maylikeuid=:maylikeuid", controller.getMayLikeByUid);

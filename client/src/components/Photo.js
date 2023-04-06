@@ -38,7 +38,6 @@ function Photo({ photo }) {
 			alert("Invalid tag. no spaces and no #");
 			return;
 		}
-		// Check if duplidate tag
 		await fetchAddTag("#" + newTag.trim(), photo.pid);
 		const fetchedTags = await fetchTagsByPid(photo.pid);
 		setTags(fetchedTags.tags);

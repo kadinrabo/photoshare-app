@@ -1,6 +1,5 @@
 const client = require("../util/database");
 
-// Handler for http://localhost:8080/likes
 exports.getAllLikes = (req, res, next) => {
 	client.query("SELECT * FROM liketable", (err, result) => {
 		if (err) {

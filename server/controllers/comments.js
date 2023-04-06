@@ -1,6 +1,5 @@
 const client = require("../util/database");
 
-// Handler for http://localhost:8080/comments
 exports.getAllComments = (req, res, next) => {
 	client.query("SELECT * FROM commenttable", (err, result) => {
 		if (err) {

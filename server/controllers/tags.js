@@ -1,6 +1,5 @@
 const client = require("../util/database");
 
-// Handler for http://localhost:8080/tags
 exports.getPopularTags = (req, res, next) => {
 	const query = `
 		SELECT t.*
@@ -19,7 +18,6 @@ exports.getPopularTags = (req, res, next) => {
 	});
 };
 
-// tags: get all unique tags on photos by a user uid
 exports.getAllUniqueTagsByUid = (req, res, next) => {
 	const uid = req.params.uid;
 	const query = `
@@ -64,7 +62,6 @@ exports.addTag = (req, res, next) => {
 				return next(err);
 			}
 			if (result.rowCount > 0) {
-				// Tag already exists, use the existing tid to insert into hastag
 				const tid = result.rows[0].tid;
 				client.query(
 					"INSERT INTO hastag (pid, tid) VALUES ($1, $2)",
@@ -79,7 +76,6 @@ exports.addTag = (req, res, next) => {
 					}
 				);
 			} else {
-				// Tag doesn't exist, insert new tag and hastag rows
 				client.query(
 					"INSERT INTO tagtable (tag) VALUES ($1) RETURNING tid",
 					[tag],

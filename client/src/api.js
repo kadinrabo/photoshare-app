@@ -11,13 +11,10 @@ export async function fetchUsersBySearch(searchText) {
 	try {
 		const response = await fetch(`http://localhost:8080/users/${searchText}`);
 		const data = await response.json();
-		// One user is being searched for
 		if (/^\d+$/.test(searchText) || /^\S+@\S+\.\S+$/.test(searchText)) {
 			const user = new User(data[0]);
 			return user;
-		}
-		// Multiple user query
-		else {
+		} else {
 			const users = new Users(data);
 			return users;
 		}
@@ -183,8 +180,6 @@ export async function fetchTagsByPid(pid) {
 }
 
 export async function fetchAddFriend(uid, fid) {
-	// uid is the uid of the currently logged in user (localStorage)
-	// fid must be the uid of the user being friended
 	const newFriend = { uid, fid };
 	try {
 		await fetch("http://localhost:8080/friends", {
@@ -200,7 +195,6 @@ export async function fetchAddFriend(uid, fid) {
 }
 
 export async function fetchFollowingByUid(uid) {
-	// Actual uid (from localStorage). For the list of friends
 	try {
 		const response = await fetch(`http://localhost:8080/friends/uid=${uid}`);
 		const data = await response.json();
@@ -248,8 +242,6 @@ export async function fetchFolllowersByUid(uid) {
 }
 
 export async function fetchHasFriendByUidFid(uid, fid) {
-	// uid is the uid of the currently logged in user (localStorage)
-	// fid is the uid of the user we're checking if they're friends with
 	try {
 		const response = await fetch(`http://localhost:8080/friends/${uid}/${fid}`);
 		const data = await response.json();

@@ -1,5 +1,4 @@
 import React from "react";
-import Auth from "./Auth";
 import Navbar from "./Navbar";
 import SearchForFriends from "./SearchForFriends";
 import SearchForTags from "./SearchForTags";
