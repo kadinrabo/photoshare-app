@@ -23,7 +23,7 @@ function PhotoRow({ photo, onItemClick }) {
 				cursor: "pointer",
 				transition: "background-color 0.2s ease-in-out",
 				borderRadius: "1px",
-				margin: "1px 0",
+				margin: "0px",
 			}}
 		>
 			<h5
@@ -32,23 +32,24 @@ function PhotoRow({ photo, onItemClick }) {
 					marginRight: "10px",
 					color: "#3478f6",
 					textDecoration: "none",
-					margin: 0,
-					padding: 0,
+					margin: "0px",
+					padding: 2,
 				}}
 			>
 				{photo.caption ? photo.caption : "Photo"}
 			</h5>
 			{user && (
-				<h7
+				<h6
 					style={{
 						display: "inline-block",
 						fontSize: "14px",
 						color: "#999",
-						padding: 3,
+						margin: "0px",
+						padding: 2,
 					}}
 				>
 					By {user.fname} {user.lname}
-				</h7>
+				</h6>
 			)}
 		</div>
 	);

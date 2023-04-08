@@ -39,7 +39,7 @@ function SearchResult({ photo, onItemClick }) {
 				{photo.caption ? photo.caption : "Photo"}
 			</h5>
 			{user && (
-				<h7
+				<h6
 					style={{
 						display: "inline-block",
 						fontSize: "14px",
@@ -48,7 +48,7 @@ function SearchResult({ photo, onItemClick }) {
 					}}
 				>
 					By {user.fname} {user.lname}
-				</h7>
+				</h6>
 			)}
 		</div>
 	);
