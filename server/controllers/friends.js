@@ -9,6 +9,46 @@ exports.getAllFriends = (req, res, next) => {
 	});
 };
 
+exports.getFollowedByFid = (req, res, next) => {
+	const uidf = req.params.uidf;
+	const query = `
+		SELECT * FROM usertable WHERE uid IN (SELECT uid FROM hasfriend WHERE fid = $1);
+	`;
+	client.query(query, [uidf], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
+exports.getFollowingByUid = (req, res, next) => {
+	const uid = req.params.uid;
+	const query = `
+		SELECT * FROM usertable WHERE uid IN (SELECT fid FROM hasfriend WHERE uid = $1);
+	`;
+	client.query(query, [uid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
+exports.getHasFriendByUidFid = (req, res, next) => {
+	const uid = req.params.uid;
+	const fid = req.params.fid;
+	const query = `	
+		SELECT * FROM hasfriend WHERE uid = $1 AND fid = $2;
+	`;
+	client.query(query, [uid, fid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
 exports.addFriend = (req, res, next) => {
 	const { fid, uid } = req.body;
 	client.query(
@@ -32,44 +72,4 @@ exports.addFriend = (req, res, next) => {
 			);
 		}
 	);
-};
-
-exports.getFollowingByUid = (req, res, next) => {
-	const uid = req.params.uid;
-	const query = `
-		SELECT * FROM usertable WHERE uid IN (SELECT fid FROM hasfriend WHERE uid = $1);
-	`;
-	client.query(query, [uid], (err, result) => {
-		if (err) {
-			return next(err);
-		}
-		res.json(result.rows);
-	});
-};
-
-exports.getFollowedByFid = (req, res, next) => {
-	const uidf = req.params.uidf;
-	const query = `
-		SELECT * FROM usertable WHERE uid IN (SELECT uid FROM hasfriend WHERE fid = $1);
-	`;
-	client.query(query, [uidf], (err, result) => {
-		if (err) {
-			return next(err);
-		}
-		res.json(result.rows);
-	});
-};
-
-exports.getHasFriendByUidFid = (req, res, next) => {
-	const uid = req.params.uid;
-	const fid = req.params.fid;
-	const query = `	
-		SELECT * FROM hasfriend WHERE uid = $1 AND fid = $2;
-	`;
-	client.query(query, [uid, fid], (err, result) => {
-		if (err) {
-			return next(err);
-		}
-		res.json(result.rows);
-	});
 };

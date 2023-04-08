@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { fetchAddLikeByPid, fetchLikersByPid } from "../api";
+import { fetchAddLikeByPid } from "../api/likes";
+import { fetchLikersByPid } from "../api/users";
 
 function Likes({ photo }) {
 	const [users, setUsers] = useState([]);

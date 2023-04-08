@@ -1,11 +1,11 @@
 import React from "react";
-import Navbar from "./Navbar";
-import SearchForFriends from "./SearchForFriends";
-import SearchForTags from "./SearchForTags";
-import TrendingTags from "./TrendingTags";
-import CScore from "./CScore";
-import AllAlbums from "./AllAlbums";
-import AllPhotos from "./AllPhotos";
+import Navbar from "../components/Navbar";
+import SearchForFriends from "../components/SearchForFriends";
+import SearchForTags from "../components/SearchForTags";
+import TrendingTags from "../components/TrendingTags";
+import CScore from "../components/CScore";
+import AllAlbums from "../components/AllAlbums";
+import AllPhotos from "../components/AllPhotos";
 
 function Home() {
 	return (

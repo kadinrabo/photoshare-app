@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchTop5CScore } from "../api";
+import { fetchTop5CScore } from "../api/users";
 
 function CScore() {
 	const [top5, setTop5] = useState([]);

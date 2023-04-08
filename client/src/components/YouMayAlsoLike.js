@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { fetchPhotosMayLikeByUid, fetchUserByPid } from "../api";
+import { fetchPhotosMayLikeByUid } from "../api/users";
+import { fetchUserByPid } from "../api/users";
 import Popup from "./Popup";
 import Photo from "./Photo";
 

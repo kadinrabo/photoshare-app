@@ -9,6 +9,23 @@ exports.getAllComments = (req, res, next) => {
 	});
 };
 
+exports.getCommentsByPid = (req, res, next) => {
+	const pid = req.params.pid;
+	const query = `
+        SELECT * FROM commenttable WHERE cid IN (
+            SELECT cid
+            FROM hascomment
+            WHERE pid = $1
+        );
+    `;
+	client.query(query, [pid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
 exports.addComment = (req, res, next) => {
 	const { uid, ctext, pid } = req.body;
 	client.query(
@@ -33,21 +50,4 @@ exports.addComment = (req, res, next) => {
 			});
 		}
 	);
-};
-
-exports.getCommentsByPid = (req, res, next) => {
-	const pid = req.params.pid;
-	const query = `
-        SELECT * FROM commenttable WHERE cid IN (
-            SELECT cid
-            FROM hascomment
-            WHERE pid = $1
-        );
-    `;
-	client.query(query, [pid], (err, result) => {
-		if (err) {
-			return next(err);
-		}
-		res.json(result.rows);
-	});
 };

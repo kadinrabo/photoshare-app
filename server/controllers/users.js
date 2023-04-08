@@ -18,23 +18,6 @@ exports.getUsersByCScore = (req, res, next) => {
 	});
 };
 
-exports.getUserByPid = (req, res, next) => {
-	const pid = req.params.pid;
-	const query = `
-		SELECT * FROM usertable WHERE uid IN 
-			(SELECT uid FROM albumtable WHERE aid IN (
-				SELECT aid
-				FROM contains
-				WHERE pid = $1));
-      `;
-	client.query(query, [pid], (err, result) => {
-		if (err) {
-			return next(err);
-		}
-		res.json(result.rows);
-	});
-};
-
 exports.getRecsByUid = (req, res, next) => {
 	const uid = req.params.uid;
 	const query = `
@@ -95,6 +78,23 @@ exports.getMayLikeByUid = (req, res, next) => {
 	LIMIT 5;
 	`;
 	client.query(query, [maylikeuid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
+exports.getUserByPid = (req, res, next) => {
+	const pid = req.params.pid;
+	const query = `
+		SELECT * FROM usertable WHERE uid IN 
+			(SELECT uid FROM albumtable WHERE aid IN (
+				SELECT aid
+				FROM contains
+				WHERE pid = $1));
+      `;
+	client.query(query, [pid], (err, result) => {
 		if (err) {
 			return next(err);
 		}

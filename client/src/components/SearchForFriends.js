@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { fetchUsersBySearch } from "../api";
+import { fetchUsersBySearch } from "../api/users";
 
 function SearchResult({ user }) {
 	return (

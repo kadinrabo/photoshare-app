@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { fetchUsersBySearch } from "../api";
+import { fetchUsersBySearch } from "../api/users";
 
 function Login() {
 	const [email, setEmail] = useState("");

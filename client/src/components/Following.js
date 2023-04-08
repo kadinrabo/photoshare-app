@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchFollowingByUid } from "../api";
+import { fetchFollowingByUid } from "../api/friends";
 
 function Following({ user }) {
 	const [users, setUsers] = useState([]);

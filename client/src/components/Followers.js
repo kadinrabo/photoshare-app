@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchFolllowersByUid } from "../api";
+import { fetchFolllowersByUid } from "../api/friends";
 
 function Followers() {
 	const [users, setUsers] = useState([]);

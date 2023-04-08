@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchUserRecommendationsByUid } from "../api";
+import { fetchUserRecommendationsByUid } from "../api/users";
 
 function Recommendations({ user }) {
 	const [users, setUsers] = useState([]);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { createNewUser, fetchUsersBySearch } from "../api";
+import { createNewUser, fetchUsersBySearch } from "../api/users";
 
 function isValidDate(str) {
 	const dobRegex =

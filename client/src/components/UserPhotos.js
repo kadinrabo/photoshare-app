@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-	fetchUniqueTagsByUid,
-	fetchPhotosByUidTag,
-	fetchPhotosByUid,
-	fetchUserByPid,
-} from "../api";
+import { fetchUniqueTagsByUid } from "../api/tags";
+import { fetchPhotosByUidTag, fetchPhotosByUid } from "../api/photos";
+import { fetchUserByPid } from "../api/users";
 import Popup from "./Popup";
 import Photo from "./Photo";
 

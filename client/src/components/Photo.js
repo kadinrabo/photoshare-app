@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
-import {
-	fetchUserByPid,
-	fetchTagsByPid,
-	fetchAddTag,
-	fetchDeletePhotoByPid,
-} from "../api";
+import { fetchUserByPid } from "../api/users";
+import { fetchTagsByPid } from "../api/tags";
+import { fetchAddTag } from "../api/tags";
+import { fetchDeletePhotoByPid } from "../api/photos";
 import Likes from "./Likes";
 import Comments from "./Comments";
+import { ref, getDownloadURL, listAll } from "firebase/storage";
+import { getStorage } from "firebase/storage";
 
 function Photo({ photo }) {
+	const imagesListRef = ref(getStorage(), "files/");
+	const [imageUrl, setImageUrl] = useState(null);
 	const [user, setUser] = useState(null);
 	const [tags, setTags] = useState(null);
 	const [newTag, setNewTag] = useState("");
@@ -16,6 +18,18 @@ function Photo({ photo }) {
 	const handleInputChange = (event) => {
 		setNewTag(event.target.value);
 	};
+
+	useEffect(() => {
+		listAll(imagesListRef).then((response) => {
+			response.items.forEach((item) => {
+				getDownloadURL(item).then((url) => {
+					if (url.toString().includes(photo.pdata)) {
+						setImageUrl(url);
+					}
+				});
+			});
+		});
+	}, []);
 
 	useEffect(() => {
 		async function fetchUser() {
@@ -62,13 +76,9 @@ function Photo({ photo }) {
 				}}
 			>
 				<img
-					src={photo.pdata}
-					alt=""
-					style={{
-						maxWidth: "100%",
-						maxHeight: "100%",
-						objectFit: "contain",
-					}}
+					src={imageUrl ? imageUrl : "Image not loaded yet"}
+					alt="Image"
+					style={{ maxWidth: "30%", maxHeight: "40%", objectFit: "contain" }}
 				/>
 				<div style={{ display: "inline-block", marginTop: "10px" }}>
 					<h4 style={{ display: "inline-block", marginRight: "10px" }}>

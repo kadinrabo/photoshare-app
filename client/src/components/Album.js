@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { fetchPhotosByAid } from "../api";
+import { fetchPhotosByAid } from "../api/photos";
+import { ref, getDownloadURL, listAll } from "firebase/storage";
+import { getStorage } from "firebase/storage";
 
 function Album({ album }) {
 	const [photos, setPhotos] = useState([]);
+	const imagesListRef = ref(getStorage(), "files/");
+	const [imageUrl, setImageUrl] = useState(null);
 
 	useEffect(() => {
 		const getPhotos = async () => {
@@ -12,6 +16,20 @@ function Album({ album }) {
 		getPhotos();
 	}, [album.aid]);
 
+	useEffect(() => {
+		listAll(imagesListRef).then((response) => {
+			response.items.forEach((item) => {
+				getDownloadURL(item).then((url) => {
+					photos.forEach((photo) => {
+						if (url.toString().includes(photo.pdata)) {
+							setImageUrl(url);
+						}
+					});
+				});
+			});
+		});
+	}, [photos, imagesListRef]);
+
 	return (
 		<div>
 			<h1>{album.aname}</h1>
@@ -20,9 +38,13 @@ function Album({ album }) {
 			) : (
 				photos.map((photo) => (
 					<img
-						style={{ maxWidth: "50%", maxHeight: "50%" }}
+						style={{ maxWidth: "30%", maxHeight: "40%" }}
 						key={photo.pid}
-						src={photo.pdata}
+						src={
+							imageUrl && imageUrl.toString().includes(photo.pdata)
+								? imageUrl
+								: "image not loaded"
+						}
 						alt={photo.caption}
 					/>
 				))

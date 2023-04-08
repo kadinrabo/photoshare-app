@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-	fetchCommentsByPid,
-	fetchUsersBySearch,
-	fetchAddComment,
-} from "../api";
+import { fetchCommentsByPid, fetchAddComment } from "../api/comments";
+import { fetchUsersBySearch } from "../api/users";
 
 function Comments({ photo }) {
 	const [comments, setComments] = useState([]);

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-	fetchUsersBySearch,
-	fetchAddFriend,
-	fetchHasFriendByUidFid,
-} from "../api";
+import { fetchUsersBySearch } from "../api/users";
+import { fetchAddFriend, fetchHasFriendByUidFid } from "../api/friends";
 import Navbar from "./Navbar";
 import UserPhotos from "./UserPhotos";
 import UserAlbums from "./UserAlbums";

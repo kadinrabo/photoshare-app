@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { storage } from "../../src/firebase";
+import { storage } from "../api/firebase";
 import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import { fetchAlbumsBySearch, createNewPhoto } from "../api";
+import { fetchAlbumsBySearch } from "../api/albums";
+import { createNewPhoto } from "../api/photos";
 
 function UploadPhoto() {
 	const [imgUrl, setImgUrl] = useState(null);
@@ -41,7 +42,8 @@ function UploadPhoto() {
 			alert("Please create and/or select an album first!");
 			return;
 		}
-		const storageRef = ref(storage, `files/${file.name}-${uuidv4()}`);
+		const pdata = uuidv4();
+		const storageRef = ref(storage, `files/${file.name}-${pdata}`);
 		const uploadTask = uploadBytesResumable(storageRef, file);
 
 		uploadTask.on(
@@ -64,7 +66,7 @@ function UploadPhoto() {
 				getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
 					setImgUrl(downloadURL);
 					try {
-						await createNewPhoto(albumId, downloadURL, caption);
+						await createNewPhoto(albumId, pdata, caption);
 					} catch (error) {
 						console.log(error);
 					}

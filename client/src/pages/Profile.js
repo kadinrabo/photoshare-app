@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
-import Auth from "./Auth";
-import Navbar from "./Navbar";
-import UploadPhoto from "./UploadPhoto";
-import Popup from "./Popup";
-import { fetchUsersBySearch } from "../api";
-import UserPhotos from "./UserPhotos";
-import UserAlbums from "./UserAlbums";
-import Followers from "./Followers";
-import Following from "./Following";
-import UpdateInfo from "./UpdateInfo";
-import Recommendations from "./Recommendations";
-import YouMayAlsoLike from "./YouMayAlsoLike";
+import Auth from "../components/Auth";
+import Navbar from "../components/Navbar";
+import UploadPhoto from "../components/UploadPhoto";
+import Popup from "../components/Popup";
+import { fetchUsersBySearch } from "../api/users";
+import UserPhotos from "../components/UserPhotos";
+import UserAlbums from "../components/UserAlbums";
+import Followers from "../components/Followers";
+import Following from "../components/Following";
+import UpdateInfo from "../components/UpdateInfo";
+import Recommendations from "../components/Recommendations";
+import YouMayAlsoLike from "../components/YouMayAlsoLike";
 
 function Profile() {
 	const [user, setUser] = useState(null);

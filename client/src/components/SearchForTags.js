@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Popup from "./Popup";
-import { fetchPhotosByTag, fetchUserByPid } from "../api";
+import { fetchPhotosByTag } from "../api/photos";
+import { fetchUserByPid } from "../api/users";
 import Photo from "./Photo";
 
 function SearchResult({ photo, onItemClick }) {

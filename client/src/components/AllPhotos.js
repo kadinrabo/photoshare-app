@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { fetchAllPhotos, fetchUserByPid } from "../api";
+import { fetchAllPhotos } from "../api/photos";
+import { fetchUserByPid } from "../api/users";
 import Popup from "./Popup";
 import Photo from "./Photo";
 

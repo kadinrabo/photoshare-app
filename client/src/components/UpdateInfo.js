@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { fetchUpdateUserByUid } from "../api";
+import { fetchUpdateUserByUid } from "../api/users";
 
 function UpdateInfo() {
 	const [formData, setFormData] = useState({

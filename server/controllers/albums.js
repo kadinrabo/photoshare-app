@@ -9,6 +9,23 @@ exports.getAllAlbums = (req, res, next) => {
 	});
 };
 
+exports.getAlbumsBySearch = (req, res, next) => {
+	const search = req.params.search;
+	if (/^\d+$/.test(search)) {
+		const query = `
+        SELECT *
+        FROM albumtable
+        WHERE uid = $1;
+      `;
+		client.query(query, [search], (err, result) => {
+			if (err) {
+				return next(err);
+			}
+			res.json(result.rows);
+		});
+	}
+};
+
 exports.addNewAlbum = (req, res, next) => {
 	const { uid, aname } = req.body;
 	client.query(
@@ -33,21 +50,4 @@ exports.addNewAlbum = (req, res, next) => {
 			);
 		}
 	);
-};
-
-exports.getAlbumsBySearch = (req, res, next) => {
-	const search = req.params.search;
-	if (/^\d+$/.test(search)) {
-		const query = `
-        SELECT *
-        FROM albumtable
-        WHERE uid = $1;
-      `;
-		client.query(query, [search], (err, result) => {
-			if (err) {
-				return next(err);
-			}
-			res.json(result.rows);
-		});
-	}
 };

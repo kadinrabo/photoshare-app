@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchTop10PopularTags } from "../api";
+import { fetchTop10PopularTags } from "../api/tags";
 
 function TrendingTags() {
 	const [topTags, setTopTags] = useState([]);

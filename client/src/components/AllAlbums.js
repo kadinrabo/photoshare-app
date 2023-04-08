@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchAllAlbums } from "../api";
+import { fetchAllAlbums } from "../api/albums";
 import Popup from "./Popup";
 import Album from "./Album";
 

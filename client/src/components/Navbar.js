@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Navbar.css";
 import { useHistory } from "react-router-dom";
-import { fetchUsersBySearch } from "../api";
+import { fetchUsersBySearch } from "../api/users";
 
 function Navbar() {
 	const [loggedInUser, setLoggedInUser] = useState(null);

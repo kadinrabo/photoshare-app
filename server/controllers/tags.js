@@ -18,6 +18,21 @@ exports.getPopularTags = (req, res, next) => {
 	});
 };
 
+exports.getTagsByPid = (req, res, next) => {
+	const pid = req.params.pid;
+	const query = `
+        SELECT * FROM tagtable WHERE tid IN (
+            SELECT tid FROM hastag WHERE pid = $1
+        );
+    `;
+	client.query(query, [pid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
 exports.getAllUniqueTagsByUid = (req, res, next) => {
 	const uid = req.params.uid;
 	const query = `
@@ -29,21 +44,6 @@ exports.getAllUniqueTagsByUid = (req, res, next) => {
 	`;
 
 	client.query(query, [uid], (err, result) => {
-		if (err) {
-			return next(err);
-		}
-		res.json(result.rows);
-	});
-};
-
-exports.getTagsByPid = (req, res, next) => {
-	const pid = req.params.pid;
-	const query = `
-        SELECT * FROM tagtable WHERE tid IN (
-            SELECT tid FROM hastag WHERE pid = $1
-        );
-    `;
-	client.query(query, [pid], (err, result) => {
 		if (err) {
 			return next(err);
 		}
