@@ -102,6 +102,20 @@ exports.getUserByPid = (req, res, next) => {
 	});
 };
 
+exports.getUserByAid = (req, res, next) => {
+	const aid = req.params.aid;
+	const query = `
+		SELECT * FROM usertable WHERE uid IN 
+			(SELECT uid FROM albumtable WHERE aid = $1);
+      `;
+	client.query(query, [aid], (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
 exports.getUserHasLikeByPid = (req, res, next) => {
 	const pid = req.params.haslikepid;
 	const query = `

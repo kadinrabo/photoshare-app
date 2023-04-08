@@ -36,3 +36,13 @@ export async function fetchAddAlbum(uid, aname) {
 		console.error(error);
 	}
 }
+
+export async function fetchDeleteAlbumByAid(aid) {
+	try {
+		await fetch(`http://localhost:8080/albums/aid=${aid}`, {
+			method: "DELETE",
+		});
+	} catch (error) {
+		console.error(error);
+	}
+}

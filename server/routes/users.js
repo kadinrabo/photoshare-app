@@ -5,6 +5,7 @@ router.get("/", controller.getUsersByCScore);
 router.get("/?uid=:uid", controller.getRecsByUid);
 router.get("/?maylikeuid=:maylikeuid", controller.getMayLikeByUid);
 router.get("/?pid=:pid", controller.getUserByPid);
+router.get("/?aid=:aid", controller.getUserByAid);
 router.get("/?haslikepid=:haslikepid", controller.getUserHasLikeByPid);
 router.get("/:search", controller.getUsersBySearch);
 

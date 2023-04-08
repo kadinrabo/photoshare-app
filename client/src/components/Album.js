@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { fetchPhotosByAid } from "../api/photos";
 import { ref, getDownloadURL, listAll } from "firebase/storage";
 import { getStorage } from "firebase/storage";
+import { fetchUserByAid } from "../api/users";
+import { fetchDeleteAlbumByAid } from "../api/albums";
 
 function Album({ album }) {
 	const [photos, setPhotos] = useState([]);
 	const imagesListRef = ref(getStorage(), "files/");
+	const [user, setUser] = useState(null);
 	const [imageUrl, setImageUrl] = useState(null);
 
 	useEffect(() => {
@@ -15,6 +18,19 @@ function Album({ album }) {
 		};
 		getPhotos();
 	}, [album.aid]);
+
+	useEffect(() => {
+		async function fetchUser() {
+			const fetchedUser = await fetchUserByAid(album.aid);
+			setUser(fetchedUser);
+		}
+		fetchUser();
+	}, [album.aid]);
+
+	const handleDeleteAlbum = async () => {
+		await fetchDeleteAlbumByAid(album.aid);
+		window.location.reload();
+	};
 
 	useEffect(() => {
 		listAll(imagesListRef).then((response) => {
@@ -48,6 +64,18 @@ function Album({ album }) {
 						alt={photo.caption}
 					/>
 				))
+			)}
+			{user && user.uid == localStorage.getItem("uid") && (
+				<button
+					style={{
+						backgroundColor: "red",
+						color: "white",
+						marginRight: "5px",
+					}}
+					onClick={handleDeleteAlbum}
+				>
+					Delete album
+				</button>
 			)}
 		</div>
 	);

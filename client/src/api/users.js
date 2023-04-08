@@ -29,6 +29,17 @@ export async function fetchUserByPid(pid) {
 	}
 }
 
+export async function fetchUserByAid(aid) {
+	try {
+		const response = await fetch(`http://localhost:8080/users/aid=${aid}`);
+		const data = await response.json();
+		const user = new User(data[0]);
+		return user;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 export async function fetchLikersByPid(pid) {
 	try {
 		const response = await fetch(
