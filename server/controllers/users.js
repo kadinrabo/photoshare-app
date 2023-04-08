@@ -8,7 +8,7 @@ exports.getUsersByCScore = (req, res, next) => {
 		LEFT JOIN commenttable ON usertable.uid = commenttable.uid
 		GROUP BY usertable.uid, usertable.email, usertable.fname, usertable.lname
 		ORDER BY COUNT(DISTINCT commenttable.cid) + COUNT(DISTINCT phototable.pid) DESC
-		LIMIT 5;
+		LIMIT 10;
     `;
 	client.query(query, (err, result) => {
 		if (err) {

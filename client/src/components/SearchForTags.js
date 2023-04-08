@@ -23,7 +23,7 @@ function SearchResult({ photo, onItemClick }) {
 				cursor: "pointer",
 				transition: "background-color 0.2s ease-in-out",
 				borderRadius: "1px",
-				margin: "1px 0",
+				margin: "0px",
 			}}
 		>
 			<h5
@@ -32,8 +32,8 @@ function SearchResult({ photo, onItemClick }) {
 					marginRight: "10px",
 					color: "#3478f6",
 					textDecoration: "none",
-					margin: 0,
-					padding: 0,
+					margin: "0px",
+					padding: 2,
 				}}
 			>
 				{photo.caption ? photo.caption : "Photo"}
@@ -44,7 +44,8 @@ function SearchResult({ photo, onItemClick }) {
 						display: "inline-block",
 						fontSize: "14px",
 						color: "#999",
-						padding: 3,
+						margin: "0px",
+						padding: 2,
 					}}
 				>
 					By {user.fname} {user.lname}

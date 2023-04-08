@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { fetchTop5CScore } from "../api/users";
+import { fetchTop10CScore } from "../api/users";
 
 function CScore() {
-	const [top5, setTop5] = useState([]);
+	const [top10, setTop5] = useState([]);
 
 	useEffect(() => {
 		async function fetchData() {
-			const fetchedData = await fetchTop5CScore();
+			const fetchedData = await fetchTop10CScore();
 			setTop5(fetchedData.users);
 		}
 		fetchData();
@@ -15,7 +15,7 @@ function CScore() {
 	return (
 		<>
 			<div
-				className="top5-container"
+				className="top10-container"
 				style={{
 					padding: "20px",
 					borderRadius: "10px",
@@ -23,14 +23,14 @@ function CScore() {
 					backgroundColor: "white",
 				}}
 			>
-				<h1 style={{ maxWidth: "90%" }}>Top 5 Users</h1>
-				{top5.map((top) => (
+				<h1 style={{ maxWidth: "90%" }}>Top 10 Users</h1>
+				{top10.map((top) => (
 					<div className="top" key={top.uid}>
 						{top.fname} {top.lname}
 					</div>
 				))}
 				<style jsx="true">{`
-					.top5-container {
+					.top10-container {
 						display: flex;
 						flex-wrap: wrap;
 						justify-content: center;

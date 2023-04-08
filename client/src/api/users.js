@@ -114,7 +114,7 @@ export async function createNewUser(
 	}
 }
 
-export async function fetchTop5CScore() {
+export async function fetchTop10CScore() {
 	try {
 		const response = await fetch(`http://localhost:8080/users`);
 		const data = await response.json();
