@@ -4,7 +4,7 @@ CREATE TABLE UserTable (
 	email varchar(320) NOT NULL UNIQUE,
 	fname varchar(50) NOT NULL,
 	lname varchar(50) NOT NULL,
-	pass varchar(50) NOT NULL,
+	pass varchar(100) NOT NULL,
 	dob date NOT NULL,
 	gender varchar(10) DEFAULT NULL,
 	home varchar(50) DEFAULT NULL,

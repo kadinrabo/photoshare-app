@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createNewUser, fetchUsersBySearch } from "../api/users";
+import bcrypt from "bcryptjs";
 
 function isValidDate(str) {
 	const dobRegex =

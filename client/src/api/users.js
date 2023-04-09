@@ -1,6 +1,7 @@
 import Users from "../models/Users";
 import User from "../models/User";
 import MayLikePhotos from "../models/MayLikePhotos";
+import bcrypt from "bcryptjs";
 
 export async function fetchUsersBySearch(searchText) {
 	try {
