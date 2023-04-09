@@ -18,6 +18,17 @@ export async function fetchUsersBySearch(searchText) {
 	}
 }
 
+export async function fetchAllUsers() {
+	try {
+		const response = await fetch(`http://localhost:8080/users/all=all`);
+		const data = await response.json();
+		const users = new Users(data);
+		return users;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 export async function fetchUserByPid(pid) {
 	try {
 		const response = await fetch(`http://localhost:8080/users/pid=${pid}`);

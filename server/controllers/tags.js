@@ -18,6 +18,17 @@ exports.getPopularTags = (req, res, next) => {
 	});
 };
 
+exports.getAllTags = (req, res, next) => {
+	const query = `SELECT * from tagtable;`;
+
+	client.query(query, (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
 exports.getTagsByPid = (req, res, next) => {
 	const pid = req.params.pid;
 	const query = `
@@ -31,6 +42,31 @@ exports.getTagsByPid = (req, res, next) => {
 		}
 		res.json(result.rows);
 	});
+};
+
+exports.getTagsByQuery = (req, res, next) => {
+	const qry = req.params.qry;
+
+	if (qry.split(",").length === 1) {
+		const search = "%" + "#" + req.params.qry + "%";
+		const query = `SELECT * FROM tagtable WHERE tag ILIKE $1;`;
+		client.query(query, [search], (err, result) => {
+			if (err) {
+				return next(err);
+			}
+			res.json(result.rows);
+		});
+	} else if (qry.split(",").length > 1) {
+		const tags = qry.split(",");
+		const search = tags.map((t) => "%" + "#" + t.trim() + "%");
+		const query = `SELECT * FROM tagtable WHERE tag ILIKE ANY ($1);`;
+		client.query(query, [search], (err, result) => {
+			if (err) {
+				return next(err);
+			}
+			res.json(result.rows);
+		});
+	}
 };
 
 exports.getAllUniqueTagsByUid = (req, res, next) => {

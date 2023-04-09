@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { fetchUsersBySearch } from "../api/users";
+import { fetchUsersBySearch, fetchAllUsers } from "../api/users";
 
 function SearchResult({ user }) {
 	return (
@@ -43,19 +43,26 @@ function SearchForFriends() {
 
 	useEffect(() => {
 		const fetchResults = async () => {
-			if (
-				query.trim() !== "" &&
-				!/^\d+$/.test(query.trim()) &&
-				!/^\S+@\S+\.\S+$/.test(query.trim())
+			const cleaned = query.replace(/^[\s,#]+/, "");
+			if (cleaned.trim() === "") {
+				const fetchedData = await fetchAllUsers();
+				setResults(
+					fetchedData.users.filter(
+						(user) => user.uid != localStorage.getItem("uid")
+					)
+				);
+			} else if (
+				/^\d+$/.test(query.trim()) ||
+				/^\S+@\S+\.\S+$/.test(query.trim())
 			) {
+				setResults([]);
+			} else {
 				const fetchedData = await fetchUsersBySearch(query);
 				setResults(
 					fetchedData.users.filter(
 						(user) => user.uid != localStorage.getItem("uid")
 					)
 				);
-			} else {
-				setResults([]);
 			}
 		};
 		fetchResults();
@@ -68,6 +75,7 @@ function SearchForFriends() {
 				borderRadius: "10px",
 				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 				backgroundColor: "white",
+				maxHeight: "90%",
 			}}
 		>
 			<h1 style={{ padding: "0px" }}>Search for friends</h1>
@@ -82,6 +90,7 @@ function SearchForFriends() {
 					marginBottom: "10px",
 					maxWidth: "90%",
 				}}
+				placeholder="Jane Doe"
 			/>
 			<SearchResults results={results} />
 		</div>

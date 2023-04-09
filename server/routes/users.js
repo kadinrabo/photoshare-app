@@ -2,6 +2,7 @@ const controller = require("../controllers/users");
 const router = require("express").Router();
 
 router.get("/", controller.getUsersByCScore);
+router.get("/?all=:all", controller.getAllUsers);
 router.get("/?uid=:uid", controller.getRecsByUid);
 router.get("/?maylikeuid=:maylikeuid", controller.getMayLikeByUid);
 router.get("/?pid=:pid", controller.getUserByPid);

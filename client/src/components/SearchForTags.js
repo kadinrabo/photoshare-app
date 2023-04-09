@@ -1,23 +1,10 @@
 import { useState, useEffect } from "react";
-import Popup from "./Popup";
-import { fetchPhotosByTag } from "../api/photos";
-import { fetchUserByPid } from "../api/users";
-import Photo from "./Photo";
+import { Link } from "react-router-dom";
+import { fetchTagsByQuery, fetchAllTags } from "../api/tags";
 
-function SearchResult({ photo, onItemClick }) {
-	const [user, setUser] = useState(null);
-
-	useEffect(() => {
-		async function fetchUser() {
-			const fetchedUser = await fetchUserByPid(photo.pid);
-			setUser(fetchedUser);
-		}
-		fetchUser();
-	}, []);
-
+function SearchResult({ tag }) {
 	return (
 		<div
-			onClick={() => onItemClick(photo)}
 			style={{
 				padding: "0px",
 				cursor: "pointer",
@@ -26,7 +13,8 @@ function SearchResult({ photo, onItemClick }) {
 				margin: "0px",
 			}}
 		>
-			<h5
+			<Link
+				to={`/tag/${tag.tag.substring(1)}`}
 				style={{
 					display: "inline-block",
 					marginRight: "10px",
@@ -36,30 +24,17 @@ function SearchResult({ photo, onItemClick }) {
 					padding: 2,
 				}}
 			>
-				{photo.caption ? photo.caption : "Photo"}
-			</h5>
-			{user && (
-				<h6
-					style={{
-						display: "inline-block",
-						fontSize: "14px",
-						color: "#999",
-						margin: "0px",
-						padding: 2,
-					}}
-				>
-					By {user.fname} {user.lname}
-				</h6>
-			)}
+				{tag.tag}
+			</Link>
 		</div>
 	);
 }
 
-function SearchResults({ photos, onItemClick }) {
+function SearchResults({ results }) {
 	return (
 		<div style={{ maxHeight: "180px", overflowY: "auto" }}>
-			{photos.map((photo) => (
-				<SearchResult key={photo.pid} photo={photo} onItemClick={onItemClick} />
+			{results.map((result) => (
+				<SearchResult key={result.tid} tag={result} />
 			))}
 		</div>
 	);
@@ -67,36 +42,44 @@ function SearchResults({ photos, onItemClick }) {
 
 function SearchForTags() {
 	const [query, setQuery] = useState("");
-	const [photos, setPhotos] = useState([]);
-	const [showPopup, setShowPopup] = useState(false);
-	const [photo, setPhoto] = useState(null);
+	const [results, setResults] = useState([]);
 
 	const handleQueryChange = (event) => {
 		setQuery(event.target.value);
 	};
 
-	const handleResultClick = (photo) => {
-		setPhoto(photo);
-		setShowPopup(true);
-	};
-
-	const handleClosePopup = () => {
-		setShowPopup(false);
-		setPhoto(null);
-	};
-
 	useEffect(() => {
 		const fetchResults = async () => {
-			if (
-				query.trim() === "" ||
-				query.indexOf("#") !== -1 ||
-				!(query.split(",").length === 1 || query.split(",").length > 1)
+			const cleaned = query.replace(/^[\s,#]+/, "");
+			if (cleaned.trim() === "") {
+				const fetchedData = await fetchAllTags();
+				setResults(fetchedData.tags);
+			} else if (
+				cleaned.indexOf("#") !== -1 ||
+				!(cleaned.split(",").length === 1 || cleaned.split(",").length > 1)
 			) {
-				setPhotos([]);
+				setResults([]);
 			} else {
-				if (!(query.slice(-1) === ",")) {
-					const fetchedData = await fetchPhotosByTag(query);
-					setPhotos(fetchedData.photos);
+				if (/,,/g.test(cleaned)) {
+					setResults([]);
+				} else if (!(cleaned.slice(-1) === ",")) {
+					const fetchedData = await fetchTagsByQuery(cleaned);
+					const uniqueTags = fetchedData.tags.filter((tag, index, self) => {
+						return (
+							index ===
+							self.findIndex((existingTag) => existingTag.tag === tag.tag)
+						);
+					});
+					setResults(uniqueTags);
+				} else {
+					const fetchedData = await fetchTagsByQuery(cleaned.slice(0, -1));
+					const uniqueTags = fetchedData.tags.filter((tag, index, self) => {
+						return (
+							index ===
+							self.findIndex((existingTag) => existingTag.tag === tag.tag)
+						);
+					});
+					setResults(uniqueTags);
 				}
 			}
 		};
@@ -104,32 +87,33 @@ function SearchForTags() {
 	}, [query]);
 
 	return (
-		<div
-			style={{
-				padding: "20px",
-				borderRadius: "10px",
-				boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
-				backgroundColor: "white",
-			}}
-		>
-			<h1 style={{ padding: "0px" }}>Search by tag (no #)</h1>
-			<input
-				type="text"
-				value={query}
-				onChange={handleQueryChange}
+		<>
+			<div
 				style={{
-					padding: "5px",
-					border: "1px solid #ddd",
-					borderRadius: "5px",
-					marginBottom: "10px",
-					maxWidth: "90%",
+					padding: "20px",
+					borderRadius: "10px",
+					boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
+					backgroundColor: "white",
+					maxHeight: "90%",
 				}}
-			/>
-			<SearchResults photos={photos} onItemClick={handleResultClick} />
-			<Popup onClose={handleClosePopup} isOpen={showPopup}>
-				{photo && <Photo photo={photo} />}
-			</Popup>
-		</div>
+			>
+				<h1 style={{ padding: "0px" }}>Search for tags</h1>
+				<input
+					type="text"
+					value={query}
+					onChange={handleQueryChange}
+					placeholder="#sunset, beach, #fish"
+					style={{
+						padding: "5px",
+						border: "1px solid #ddd",
+						borderRadius: "5px",
+						marginBottom: "10px",
+						maxWidth: "90%",
+					}}
+				/>
+				<SearchResults results={results} />
+			</div>
+		</>
 	);
 }
 

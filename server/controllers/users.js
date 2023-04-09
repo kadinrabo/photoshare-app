@@ -18,6 +18,15 @@ exports.getUsersByCScore = (req, res, next) => {
 	});
 };
 
+exports.getAllUsers = (req, res, next) => {
+	client.query("SELECT * FROM usertable;", (err, result) => {
+		if (err) {
+			return next(err);
+		}
+		res.json(result.rows);
+	});
+};
+
 exports.getRecsByUid = (req, res, next) => {
 	const uid = req.params.uid;
 	const query = `

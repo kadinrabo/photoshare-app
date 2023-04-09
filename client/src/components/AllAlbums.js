@@ -72,6 +72,7 @@ function AllAlbums() {
 					borderRadius: "10px",
 					boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 					backgroundColor: "white",
+					maxHeight: "90%",
 				}}
 			>
 				<h1 style={{ maxWidth: "90%" }}>Albums</h1>

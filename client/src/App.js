@@ -5,6 +5,7 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import Profile from "./pages/Profile";
 import User from "./components/User";
+import Tag from "./components/Tag";
 
 function App() {
 	return (
@@ -14,6 +15,7 @@ function App() {
 			<Route exact path="/home" component={Home} />
 			<Route exact path="/profile" component={Profile} />
 			<Route exact path="/user/:uid" component={User} />
+			<Route exact path="/tag/:txt" component={Tag} />
 		</div>
 	);
 }

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { fetchTop10CScore } from "../api/users";
+import { Link } from "react-router-dom";
 
 function CScore() {
-	const [top10, setTop5] = useState([]);
+	const [top10, setTop10] = useState([]);
 
 	useEffect(() => {
 		async function fetchData() {
 			const fetchedData = await fetchTop10CScore();
-			setTop5(fetchedData.users);
+			setTop10(fetchedData.users);
 		}
 		fetchData();
 	}, []);
@@ -26,7 +27,12 @@ function CScore() {
 				<h1 style={{ maxWidth: "90%" }}>Top 10 Users</h1>
 				{top10.map((top) => (
 					<div className="top" key={top.uid}>
-						{top.fname} {top.lname}
+						<Link
+							to={`/user/${top.uid}`}
+							style={{ color: "#3478f6", textDecoration: "none" }}
+						>
+							{top.fname} {top.lname}
+						</Link>
 					</div>
 				))}
 				<style jsx="true">{`

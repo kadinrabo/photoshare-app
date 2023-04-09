@@ -37,32 +37,18 @@ function Home() {
 					padding: "20px",
 				}}
 			>
-				<div style={{ flex: 1 }}>
-					<AllAlbums />
-				</div>
-				<div style={{ flex: 1 }}>
+				<div style={{ flex: 0.25 }}>
 					<AllPhotos />
 				</div>
-			</div>
-			<div
-				style={{
-					display: "flex",
-					flexWrap: "wrap",
-					justifyContent: "center",
-					gap: "20px",
-					padding: "20px",
-				}}
-			>
-				{localStorage.getItem("uid") && (
-					<div style={{ flex: 1 }}>
-						<SearchForFriends />
-					</div>
-				)}
-				{localStorage.getItem("uid") && (
-					<div style={{ flex: 1 }}>
-						<SearchForTags />
-					</div>
-				)}
+				<div style={{ flex: 0.25 }}>
+					{localStorage.getItem("uid") && <SearchForFriends />}
+				</div>
+				<div style={{ flex: 0.25 }}>
+					<AllAlbums />
+				</div>
+				<div style={{ flex: 0.25 }}>
+					{localStorage.getItem("uid") && <SearchForTags />}
+				</div>
 			</div>
 		</>
 	);

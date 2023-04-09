@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchTop10PopularTags } from "../api/tags";
+import { Link } from "react-router-dom";
 
 function TrendingTags() {
 	const [topTags, setTopTags] = useState([]);
@@ -26,7 +27,12 @@ function TrendingTags() {
 				<h1>Top 10 Trending Tags</h1>
 				{topTags.map((tag) => (
 					<div className="tag" key={tag.tid}>
-						{tag.tag}
+						<Link
+							to={`/tag/${tag.tag.substring(1)}`}
+							style={{ color: "#3478f6", textDecoration: "none" }}
+						>
+							{tag.tag}
+						</Link>
 					</div>
 				))}
 				<style jsx="true">{`

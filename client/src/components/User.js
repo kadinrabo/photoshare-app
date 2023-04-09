@@ -12,11 +12,11 @@ function User() {
 	const [isFollowing, setIsFollowing] = useState(false);
 
 	useEffect(() => {
-		async function fetchUser() {
-			const fetchedUser = await fetchUsersBySearch(uid.toString());
-			setUser(fetchedUser);
+		async function fetchData() {
+			const fetchedData = await fetchUsersBySearch(uid.toString());
+			setUser(fetchedData);
 		}
-		fetchUser();
+		fetchData();
 	}, [uid]);
 
 	useEffect(() => {

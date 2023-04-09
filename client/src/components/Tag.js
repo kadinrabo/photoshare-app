@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { fetchAllPhotos } from "../api/photos";
-import { fetchUserByPid } from "../api/users";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import Navbar from "./Navbar";
+import { fetchPhotosByTag } from "../api/photos";
 import Popup from "./Popup";
 import Photo from "./Photo";
+import { fetchUserByPid } from "../api/users";
 
 function PhotoRow({ photo, onItemClick }) {
 	const [user, setUser] = useState(null);
@@ -65,7 +67,8 @@ function Photos({ photos, onItemClick }) {
 	);
 }
 
-function AllPhotos() {
+function Tag() {
+	const { txt } = useParams();
 	const [photos, setPhotos] = useState([]);
 	const [showPopup, setShowPopup] = useState(false);
 	const [photo, setPhoto] = useState(null);
@@ -76,32 +79,45 @@ function AllPhotos() {
 	};
 
 	const handleClosePopup = async () => {
-		const fetchedData = await fetchAllPhotos();
+		const fetchedData = await fetchPhotosByTag(txt.toString());
 		setPhotos(fetchedData.photos);
 		setShowPopup(false);
 		setPhoto(null);
 	};
 
 	useEffect(() => {
-		const fetchPhotos = async () => {
-			const fetchedData = await fetchAllPhotos();
+		async function fetchData() {
+			const fetchedData = await fetchPhotosByTag(txt.toString());
 			setPhotos(fetchedData.photos);
-		};
-		fetchPhotos();
-	}, []);
+		}
+		fetchData();
+	}, [txt]);
 
 	return (
 		<>
+			<Navbar />
+			<h1
+				style={{
+					justifyContent: "center",
+					alignItems: "center",
+					display: "flex",
+				}}
+			>
+				{"#" + txt + " Photos"}
+			</h1>
 			<div
 				style={{
+					margin: "0 auto",
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
 					padding: "20px",
 					borderRadius: "10px",
 					boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.5)",
 					backgroundColor: "white",
-					maxHeight: "90%",
+					maxWidth: "20%",
 				}}
 			>
-				<h1>Photos</h1>
 				<Photos photos={photos} onItemClick={handlePhotoClick} />
 				<Popup onClose={handleClosePopup} isOpen={showPopup}>
 					{photo && <Photo photo={photo} />}
@@ -111,4 +127,4 @@ function AllPhotos() {
 	);
 }
 
-export default AllPhotos;
+export default Tag;
