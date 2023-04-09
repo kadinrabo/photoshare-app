@@ -75,7 +75,7 @@ function AllAlbums() {
 					maxHeight: "90%",
 				}}
 			>
-				<h1 style={{ maxWidth: "90%" }}>Albums</h1>
+				<h1 style={{ maxWidth: "90%" }}>All Albums</h1>
 				<Albums albums={albums} onItemClick={handleAlbumClick} />
 				<Popup onClose={handleClosePopup} isOpen={showPopup}>
 					{album && <Album album={album} />}

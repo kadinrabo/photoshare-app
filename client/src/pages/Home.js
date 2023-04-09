@@ -6,6 +6,7 @@ import TrendingTags from "../components/TrendingTags";
 import CScore from "../components/CScore";
 import AllAlbums from "../components/AllAlbums";
 import AllPhotos from "../components/AllPhotos";
+import PhotoSearch from "../components/PhotoSearch";
 
 function Home() {
 	return (
@@ -21,10 +22,13 @@ function Home() {
 					padding: "20px",
 				}}
 			>
-				<div style={{ flex: 1 }}>
+				<div style={{ flex: 0.33 }}>
 					<TrendingTags />
 				</div>
-				<div style={{ flex: 1 }}>
+				<div style={{ flex: 0.33 }}>
+					<PhotoSearch />
+				</div>
+				<div style={{ flex: 0.33 }}>
 					<CScore />
 				</div>
 			</div>
@@ -50,6 +54,17 @@ function Home() {
 					{localStorage.getItem("uid") && <SearchForTags />}
 				</div>
 			</div>
+			{/* <div
+				style={{
+					display: "flex",
+					flexWrap: "wrap",
+					justifyContent: "center",
+					gap: "20px",
+					padding: "20px",
+				}}
+			>
+				<PhotoSearch />
+			</div> */}
 		</>
 	);
 }

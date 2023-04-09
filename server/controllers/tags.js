@@ -91,50 +91,25 @@ exports.addTag = (req, res, next) => {
 	const { tag } = req.body;
 	const pid = req.params.pid;
 	client.query(
-		"SELECT tid FROM tagtable WHERE tag = $1",
+		"INSERT INTO tagtable (tag) VALUES ($1) RETURNING tid",
 		[tag],
 		(err, result) => {
 			if (err) {
 				return next(err);
 			}
-			if (result.rowCount > 0) {
-				const tid = result.rows[0].tid;
-				client.query(
-					"INSERT INTO hastag (pid, tid) VALUES ($1, $2)",
-					[pid, tid],
-					(err) => {
-						if (err) {
-							return next(err);
-						}
-						res.status(201).json({
-							message: "hastag table updated successfully!",
-						});
+			const newTid = result.rows[0].tid;
+			client.query(
+				"INSERT INTO hastag (pid, tid) VALUES ($1, $2)",
+				[pid, newTid],
+				(err) => {
+					if (err) {
+						return next(err);
 					}
-				);
-			} else {
-				client.query(
-					"INSERT INTO tagtable (tag) VALUES ($1) RETURNING tid",
-					[tag],
-					(err, result) => {
-						if (err) {
-							return next(err);
-						}
-						const newTid = result.rows[0].tid;
-						client.query(
-							"INSERT INTO hastag (pid, tid) VALUES ($1, $2)",
-							[pid, newTid],
-							(err) => {
-								if (err) {
-									return next(err);
-								}
-								res.status(201).json({
-									message: "Tag added and hastag table updated successfully!",
-								});
-							}
-						);
-					}
-				);
-			}
+					res.status(201).json({
+						message: "Tag added and hastag table updated successfully!",
+					});
+				}
+			);
 		}
 	);
 };

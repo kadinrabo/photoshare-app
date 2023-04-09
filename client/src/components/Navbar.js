@@ -38,9 +38,6 @@ function Navbar() {
 							style={{ color: "grey", fontSize: "0.8em", fontWeight: "bold" }}
 						>
 							Logged in as {loggedInUser.fname} {loggedInUser.lname}
-							{" (uid:"}
-							{loggedInUser.uid}
-							{")"}
 						</span>
 					)}
 				</div>

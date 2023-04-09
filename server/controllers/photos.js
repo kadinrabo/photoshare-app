@@ -34,6 +34,42 @@ exports.getPhotosByAid = (req, res, next) => {
 	});
 };
 
+exports.getPhotosByUidAndTags = (req, res, next) => {
+	const tag = req.params.tag;
+	const uid = req.params.uid;
+
+	if (tag.split(",").length === 1) {
+		const search = "%" + "#" + req.params.tag + "%";
+		const query = `
+		SELECT * FROM phototable WHERE pid IN (
+			SELECT pid FROM hastag WHERE tid IN (
+				SELECT tid FROM tagtable WHERE tag ILIKE $1)
+		) AND aid IN (SELECT aid FROM albumtable WHERE uid = $2);
+		`;
+		client.query(query, [search, uid], (err, result) => {
+			if (err) {
+				return next(err);
+			}
+			res.json(result.rows);
+		});
+	} else if (tag.split(",").length > 1) {
+		const tags = tag.split(",");
+		const search = tags.map((t) => "%" + "#" + t.trim() + "%");
+		const query = `
+		SELECT * FROM phototable WHERE pid IN (
+			SELECT pid FROM hastag WHERE tid IN (
+				SELECT tid FROM tagtable WHERE tag ILIKE ANY ($1))
+		) AND aid IN (SELECT aid FROM albumtable WHERE uid = $2);
+		`;
+		client.query(query, [search, uid], (err, result) => {
+			if (err) {
+				return next(err);
+			}
+			res.json(result.rows);
+		});
+	}
+};
+
 exports.getPhotosByTag = (req, res, next) => {
 	const tag = req.params.tag;
 

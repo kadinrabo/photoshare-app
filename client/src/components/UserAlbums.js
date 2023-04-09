@@ -63,6 +63,7 @@ function UserAlbums({ user }) {
 			const fetchedData = await fetchAlbumsBySearch(user.uid);
 			setAlbums(fetchedData.albums);
 			setNewAlbumName("");
+			location.reload();
 		}
 		if (newAlbumName && newAlbumName.trim() != "") {
 			createNewAlbum();

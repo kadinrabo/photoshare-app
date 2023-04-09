@@ -52,6 +52,20 @@ export async function fetchPhotosByUidTag(uid, tag) {
 	}
 }
 
+export async function fetchPhotosByUidTags(tag) {
+	const uid = localStorage.getItem("uid");
+	try {
+		const response = await fetch(
+			`http://localhost:8080/photos/fix/${tag}/${uid}`
+		);
+		const data = await response.json();
+		const photos = new Photos(data);
+		return photos;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
 export async function fetchPhotosByUid(uid) {
 	try {
 		const response = await fetch(`http://localhost:8080/photos/uid=${uid}`);

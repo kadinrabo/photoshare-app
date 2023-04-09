@@ -101,7 +101,7 @@ function AllPhotos() {
 					maxHeight: "90%",
 				}}
 			>
-				<h1>Photos</h1>
+				<h1>All Photos</h1>
 				<Photos photos={photos} onItemClick={handlePhotoClick} />
 				<Popup onClose={handleClosePopup} isOpen={showPopup}>
 					{photo && <Photo photo={photo} />}
