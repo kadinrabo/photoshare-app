@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import SearchForFriends from "../components/SearchForFriends";
 import SearchForTags from "../components/SearchForTags";
@@ -7,8 +7,22 @@ import CScore from "../components/CScore";
 import AllAlbums from "../components/AllAlbums";
 import AllPhotos from "../components/AllPhotos";
 import PhotoSearch from "../components/PhotoSearch";
+import { fetchUsersBySearch } from "../api/users";
 
 function Home() {
+	const [loggedInUser, setLoggedInUser] = useState(null);
+	const uid = localStorage.getItem("uid");
+
+	useEffect(() => {
+		async function fetchUser() {
+			const user = await fetchUsersBySearch(uid);
+			if (user) {
+				setLoggedInUser(user);
+			}
+		}
+		fetchUser();
+	}, [uid]);
+
 	return (
 		<>
 			<Navbar />
@@ -44,27 +58,12 @@ function Home() {
 				<div style={{ flex: 0.25 }}>
 					<AllPhotos />
 				</div>
-				<div style={{ flex: 0.25 }}>
-					{localStorage.getItem("uid") && <SearchForFriends />}
-				</div>
+				<div style={{ flex: 0.25 }}>{loggedInUser && <SearchForFriends />}</div>
 				<div style={{ flex: 0.25 }}>
 					<AllAlbums />
 				</div>
-				<div style={{ flex: 0.25 }}>
-					{localStorage.getItem("uid") && <SearchForTags />}
-				</div>
+				<div style={{ flex: 0.25 }}>{loggedInUser && <SearchForTags />}</div>
 			</div>
-			{/* <div
-				style={{
-					display: "flex",
-					flexWrap: "wrap",
-					justifyContent: "center",
-					gap: "20px",
-					padding: "20px",
-				}}
-			>
-				<PhotoSearch />
-			</div> */}
 		</>
 	);
 }

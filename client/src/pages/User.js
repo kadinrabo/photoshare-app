@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { fetchUsersBySearch } from "../api/users";
 import { fetchAddFriend, fetchHasFriendByUidFid } from "../api/friends";
-import Navbar from "./Navbar";
-import UserPhotos from "./UserPhotos";
-import UserAlbums from "./UserAlbums";
+import Navbar from "../components/Navbar";
+import UserPhotos from "../components/UserPhotos";
+import UserAlbums from "../components/UserAlbums";
 
 function User() {
 	const { uid } = useParams();

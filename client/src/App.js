@@ -1,11 +1,11 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Login from "./components/Login";
-import Signup from "./components/Signup";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
-import User from "./components/User";
-import Tag from "./components/Tag";
+import User from "./pages/User";
+import Tag from "./pages/Tag";
 
 function App() {
 	return (

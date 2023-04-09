@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "./Navbar";
+import Navbar from "../components/Navbar";
 import { fetchPhotosByTag } from "../api/photos";
-import Popup from "./Popup";
-import Photo from "./Photo";
+import Popup from "../components/Popup";
+import Photo from "../components/Photo";
 import { fetchUserByPid } from "../api/users";
 
 function PhotoRow({ photo, onItemClick }) {

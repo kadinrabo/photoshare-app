@@ -7,6 +7,9 @@ export async function fetchUsersBySearch(searchText) {
 	try {
 		const response = await fetch(`http://localhost:8080/users/${searchText}`);
 		const data = await response.json();
+		if (!data || data.length == 0) {
+			return null;
+		}
 		if (/^\d+$/.test(searchText) || /^\S+@\S+\.\S+$/.test(searchText)) {
 			const user = new User(data[0]);
 			return user;
