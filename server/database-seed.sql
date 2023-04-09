@@ -85,16 +85,16 @@ CREATE TABLE HasComment (
     PRIMARY KEY (pid, cid)
 );
 TRUNCATE TABLE UserTable CASCADE;
-INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('john.doe@example.com', 'John', 'Doe', 'password', '1990-01-01', 'Male', 'New York');
-INSERT INTO UserTable (email, fname, lname, pass, dob) VALUES ('jane.doe@example.com', 'Jane', 'Doe', 'password', '1992-02-02');
-INSERT INTO UserTable (email, fname, lname, pass, dob, gender) VALUES ('jim.smith@example.com', 'Jim', 'Smith', 'password', '1985-03-03', 'Male');
-INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('sarah.jones@example.com', 'Sarah', 'Jones', 'password', '1995-04-04', NULL, 'Los Angeles');
-INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('katie.williams@example.com', 'Katie', 'Williams', 'password', '1998-05-05', 'Female', NULL);
-INSERT INTO UserTable (email, fname, lname, pass, dob) VALUES ('david.nguyen@example.com', 'David', 'Nguyen', 'password', '1991-06-06');
-INSERT INTO UserTable (email, fname, lname, pass, dob, gender) VALUES ('mary.brown@example.com', 'Mary', 'Brown', 'password', '1988-07-07', 'Female');
-INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('chris.taylor@example.com', 'Chris', 'Taylor', 'password', '1994-08-08', 'Male', 'Seattle');
-INSERT INTO UserTable (email, fname, lname, pass, dob) VALUES ('samuel.clark@example.com', 'Samuel', 'Clark', 'password', '1999-09-09');
-INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('linda.smith@example.com', 'Linda', 'Smith', 'password', '1997-10-10', NULL, 'San Francisco');
+INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('john.doe@example.com', 'John', 'Doe', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1990-01-01', 'Male', 'New York');
+INSERT INTO UserTable (email, fname, lname, pass, dob) VALUES ('jane.doe@example.com', 'Jane', 'Doe', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1992-02-02');
+INSERT INTO UserTable (email, fname, lname, pass, dob, gender) VALUES ('jim.smith@example.com', 'Jim', 'Smith', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1985-03-03', 'Male');
+INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('sarah.jones@example.com', 'Sarah', 'Jones', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1995-04-04', NULL, 'Los Angeles');
+INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('katie.williams@example.com', 'Katie', 'Williams', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1998-05-05', 'Female', NULL);
+INSERT INTO UserTable (email, fname, lname, pass, dob) VALUES ('david.nguyen@example.com', 'David', 'Nguyen', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1991-06-06');
+INSERT INTO UserTable (email, fname, lname, pass, dob, gender) VALUES ('mary.brown@example.com', 'Mary', 'Brown', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1988-07-07', 'Female');
+INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('chris.taylor@example.com', 'Chris', 'Taylor', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1994-08-08', 'Male', 'Seattle');
+INSERT INTO UserTable (email, fname, lname, pass, dob) VALUES ('samuel.clark@example.com', 'Samuel', 'Clark', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1999-09-09');
+INSERT INTO UserTable (email, fname, lname, pass, dob, gender, home) VALUES ('linda.smith@example.com', 'Linda', 'Smith', '$2a$10$03e6GPWbNC762j8qKyQky.nNdFgv986nIo9wHh31oPeCwQxeFNFJW', '1997-10-10', NULL, 'San Francisco');
 TRUNCATE TABLE FriendTable CASCADE;
 INSERT INTO FriendTable (fid) VALUES (1);
 INSERT INTO FriendTable (fid) VALUES (2);

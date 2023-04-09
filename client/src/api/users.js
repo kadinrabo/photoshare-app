@@ -107,11 +107,12 @@ export async function createNewUser(
 	email,
 	fname,
 	lname,
-	pass,
+	passw,
 	dob,
 	gender,
 	home
 ) {
+	const pass = bcrypt.hashSync(passw, 10);
 	const newUser = { email, fname, lname, pass, dob, gender, home };
 	try {
 		await fetch("http://localhost:8080/users", {

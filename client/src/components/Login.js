@@ -10,6 +10,21 @@ function Login() {
 	const [formSubmitted, setFormSubmitted] = useState(false);
 	const history = useHistory();
 
+	const handleInputChange = (event) => {
+		const target = event.target;
+		const value = target.value;
+		const name = target.name;
+
+		if (/\s/.test(value)) {
+			alert("No spaces");
+			return;
+		}
+
+		setEmail(name);
+
+		console.log(name);
+	};
+
 	useEffect(() => {
 		async function fetchUserData() {
 			const fetchedUser = await fetchUsersBySearch(email);
@@ -36,7 +51,7 @@ function Login() {
 	};
 
 	useEffect(() => {
-		if (user !== null && user.pass === pass) {
+		if (user && bcrypt.compareSync(pass, user.pass)) {
 			history.push("/home");
 			window.localStorage.setItem("uid", user.uid);
 		}

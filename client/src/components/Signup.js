@@ -63,7 +63,7 @@ function Signup() {
 	};
 
 	useEffect(() => {
-		if (user !== null && user.pass === pass) {
+		if (user && bcrypt.compareSync(pass, user.pass)) {
 			history.push("/home");
 			window.localStorage.setItem("uid", user.uid);
 		}

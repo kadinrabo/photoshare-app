@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { fetchUpdateUserByUid } from "../api/users";
+import bcrypt from "bcryptjs";
 
 function UpdateInfo() {
 	const [formData, setFormData] = useState({
@@ -15,6 +16,11 @@ function UpdateInfo() {
 		const target = event.target;
 		const value = target.value;
 		const name = target.name;
+
+		if (/\s/.test(value)) {
+			alert("No spaces");
+			return;
+		}
 
 		setFormData({
 			...formData,
@@ -51,6 +57,8 @@ function UpdateInfo() {
 			alert("Invalid date format for Date of Birth");
 			return;
 		}
+
+		trimmedFormData.pass = bcrypt.hashSync(trimmedFormData.pass, 10);
 
 		await fetchUpdateUserByUid(localStorage.getItem("uid"), trimmedFormData);
 
