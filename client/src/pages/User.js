@@ -51,7 +51,7 @@ function User() {
 		setIsFollowing(true);
 	};
 
-	const buttonText = isFollowing ? "Following" : "Follow";
+	const buttonText = isFollowing ? "Friended" : "Friend";
 
 	return (
 		<>

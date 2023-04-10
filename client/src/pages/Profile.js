@@ -115,9 +115,11 @@ function Profile() {
 				}}
 			>
 				<div style={{ flex: 1 }}>
-					<button onClick={handleOpenFollowersPopup}>Followers</button>
-					<button onClick={handleOpenFollowingPopup}>Following</button>
-					<button onClick={handleOpenRecsPopup}>Recommendations</button>
+					<button onClick={handleOpenFollowersPopup}>Friended Me</button>
+					<br />
+					<button onClick={handleOpenFollowingPopup}>I Friended</button>
+					<br />
+					<button onClick={handleOpenRecsPopup}>Friend Recommendations</button>
 				</div>
 
 				<div style={{ flex: 1 }}>

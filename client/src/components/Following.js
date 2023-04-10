@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchFollowingByUid } from "../api/friends";
+import { Link } from "react-router-dom";
 
 function Following({ user }) {
 	const [users, setUsers] = useState([]);
@@ -22,12 +23,27 @@ function Following({ user }) {
 					width: "90%",
 				}}
 			>
-				<ul style={{ listStyleType: "none", margin: 0, padding: 0 }}>
+				<h1>I Friended</h1>
+				<ul
+					style={{
+						listStyleType: "none",
+						margin: 0,
+						padding: 0,
+						paddingLeft: "1.5rem",
+					}}
+				>
 					{users.map((user) => (
-						<li key={user.uid}>
-							<h2>
+						<li key={user.uid} style={{ marginBottom: "1.5rem" }}>
+							<Link
+								to={`/user/${user.uid}`}
+								style={{
+									color: "#3478f6",
+									textDecoration: "none",
+									fontSize: "2rem",
+								}}
+							>
 								{user.fname} {user.lname}
-							</h2>
+							</Link>
 						</li>
 					))}
 				</ul>
