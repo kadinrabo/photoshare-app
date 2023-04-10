@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import SearchForFriends from "../components/SearchForFriends";
-import SearchForTags from "../components/SearchForTags";
+import UserSearch from "../components/UserSearch";
+import TagSearch from "../components/TagSearch";
 import TrendingTags from "../components/TrendingTags";
 import CScore from "../components/CScore";
 import AllAlbums from "../components/AllAlbums";
@@ -59,13 +59,13 @@ function Home() {
 					<AllPhotos />
 				</div>
 				<div style={{ flex: 0.25 }}>
-					<SearchForFriends />
+					<UserSearch />
 				</div>
 				<div style={{ flex: 0.25 }}>
 					<AllAlbums />
 				</div>
 				<div style={{ flex: 0.25 }}>
-					<SearchForTags />
+					<TagSearch />
 				</div>
 			</div>
 		</>

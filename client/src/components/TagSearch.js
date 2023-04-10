@@ -40,7 +40,7 @@ function SearchResults({ results }) {
 	);
 }
 
-function SearchForTags() {
+function TagSearch() {
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState([]);
 
@@ -97,7 +97,7 @@ function SearchForTags() {
 					maxHeight: "90%",
 				}}
 			>
-				<h1 style={{ padding: "0px" }}>Search for tags</h1>
+				<h1 style={{ padding: "0px" }}>Tag Search</h1>
 				<input
 					type="text"
 					value={query}
@@ -117,4 +117,4 @@ function SearchForTags() {
 	);
 }
 
-export default SearchForTags;
+export default TagSearch;

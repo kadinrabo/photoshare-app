@@ -33,7 +33,7 @@ function SearchResults({ results }) {
 	);
 }
 
-function SearchForFriends() {
+function UserSearch() {
 	const [query, setQuery] = useState("");
 	const [results, setResults] = useState([]);
 
@@ -78,7 +78,7 @@ function SearchForFriends() {
 				maxHeight: "90%",
 			}}
 		>
-			<h1 style={{ padding: "0px" }}>Search for friends</h1>
+			<h1 style={{ padding: "0px" }}>User Search</h1>
 			<input
 				type="text"
 				value={query}
@@ -97,4 +97,4 @@ function SearchForFriends() {
 	);
 }
 
-export default SearchForFriends;
+export default UserSearch;

@@ -125,11 +125,13 @@ function PhotoSearch() {
 					if (/,,/g.test(cleaned)) {
 						setPhotos([]);
 					} else if (!(cleaned.slice(-1) === ",")) {
-						const fetchedData = await fetchPhotosByUidTags(cleaned);
+						const fetchedData = await fetchPhotosByUidTags(
+							cleaned.replace(/\s+/g, ",")
+						);
 						setPhotos(fetchedData.photos);
 					} else {
 						const fetchedData = await fetchPhotosByUidTags(
-							cleaned.slice(0, -1)
+							cleaned.slice(0, -1).replace(/\s+/g, ",")
 						);
 						setPhotos(fetchedData.photos);
 					}
@@ -148,10 +150,14 @@ function PhotoSearch() {
 					if (/,,/g.test(cleaned)) {
 						setPhotos([]);
 					} else if (!(cleaned.slice(-1) === ",")) {
-						const fetchedData = await fetchPhotosByTag(cleaned);
+						const fetchedData = await fetchPhotosByTag(
+							cleaned.replace(/\s+/g, ",")
+						);
 						setPhotos(fetchedData.photos);
 					} else {
-						const fetchedData = await fetchPhotosByTag(cleaned.slice(0, -1));
+						const fetchedData = await fetchPhotosByTag(
+							cleaned.slice(0, -1).replace(/\s+/g, ",")
+						);
 						setPhotos(fetchedData.photos);
 					}
 				}
@@ -197,7 +203,7 @@ function PhotoSearch() {
 					marginBottom: "10px",
 					maxWidth: "90%",
 				}}
-				placeholder="#sunset, beach, #fish"
+				placeholder="sunset beach"
 			/>
 			<SearchResults photos={photos} onItemClick={handleResultClick} />
 			<Popup onClose={handleClosePopup} isOpen={showPopup}>
