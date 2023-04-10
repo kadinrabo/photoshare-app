@@ -1,15 +1,13 @@
-# Usage
+# Photoshare App
 
-Clone the repo with `git clone https://github.com/kadinrabo/photoshare-app.git photoshare-app`
+### Full stack nodejs web app using Docker, React, Express, Postgres, and Firebase.
 
-In photoshare-app directory, run `docker-compose up -d` to start the containers and view the website at http://localhost:3000
+Note: The app won't work without an untracked .env file for the firebase integration in the client. I'm keeping it private to be safe, but if you're trying to use it reach out to me at krabo@asu.edu!
 
-In photoshare-app directory, run `docker-compose down` to stop the containers
+![Photo](https://drive.google.com/uc?export=view&id=1QRnSjTXX107B_8p_9z7BDDwsSWDZj8jo)
+![Home](https://drive.google.com/uc?export=view&id=18Zw77S9kLh2tyOjpvs_IeHQsFtrWg1lx)
+![Profile](https://drive.google.com/uc?export=view&id=1wbELaVHaUNg-nCEP_aQKvrBonXwpPEJy)
 
-Screenshots: https://drive.google.com/drive/folders/1NuZFfbs_TTnhepcUmzUlTT3iKH2gVhKs?usp=sharing
+# Docker Containers
 
-Local versions
-
-- Docker: 20.10.23
-- Node: v19.8.1
-- npm: 9.6.2
+![Containers](https://drive.google.com/uc?export=view&id=1K_1lUD21FTx32LlTb-e0-MfsO9--mmld)
