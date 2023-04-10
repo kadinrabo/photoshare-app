@@ -24,7 +24,51 @@ function Signup() {
 	const [home, setHome] = useState("");
 	const [formSubmitted, setFormSubmitted] = useState(false);
 	const history = useHistory();
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	const emailRegex = /^[\w.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+
+	const handleInputChange = (event) => {
+		const target = event.target;
+		var value = target.value;
+		const name = target.name;
+
+		if (/\s/.test(value)) {
+			value = value.replace(/\s/g, "");
+		}
+
+		if (name === "fname") {
+			if (value.length > 50) {
+				value = value.slice(0, 50);
+			}
+			setFname(value);
+		} else if (name === "lname") {
+			if (value.length > 50) {
+				value = value.slice(0, 50);
+			}
+			setLname(value);
+		} else if (name === "pass") {
+			if (value.length > 100) {
+				value = value.slice(0, 100);
+			}
+			setPass(value);
+		} else if (name === "dob") {
+			setDob(value);
+		} else if (name === "gender") {
+			if (value.length > 10) {
+				value = value.slice(0, 10);
+			}
+			setGender(value);
+		} else if (name === "home") {
+			if (value.length > 50) {
+				value = value.slice(0, 50);
+			}
+			setHome(value);
+		} else if (name === "email") {
+			if (value.length > 320) {
+				value = value.slice(0, 320);
+			}
+			setEmail(value);
+		}
+	};
 
 	useEffect(() => {
 		async function createUserData() {
@@ -37,20 +81,27 @@ function Signup() {
 		}
 	}, [formSubmitted, fname, lname, dob, email, pass]);
 
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
 		if (
-			fname.trim() !== "" &&
-			lname.trim() !== "" &&
-			dob.trim() !== "" &&
-			email.trim() !== "" &&
-			pass.trim() !== "" &&
-			isValidDate(dob) &&
-			emailRegex.test(email)
+			fname.length == 0 ||
+			lname.length == 0 ||
+			dob.length == 0 ||
+			email.length == 0 ||
+			pass.length == 0
 		) {
-			setFormSubmitted(true);
+			alert("Please fill out required fields");
+			return;
+		}
+		const emailExists = await fetchUsersBySearch(email);
+		if (isValidDate(dob)) {
+			if (emailRegex.test(email) && !emailExists) {
+				setFormSubmitted(true);
+			} else {
+				alert("Email is already in use or invalid");
+			}
 		} else {
-			alert("Please enter valid information. ");
+			alert("Please enter a valid date in form YYYY-MM-DD");
 		}
 	};
 
@@ -92,8 +143,9 @@ function Signup() {
 					<label>
 						<input
 							type="fname"
+							name="fname"
 							value={fname}
-							onChange={(e) => setFname(e.target.value)}
+							onChange={handleInputChange}
 							placeholder="First name"
 							style={{
 								padding: "5px",
@@ -107,8 +159,9 @@ function Signup() {
 					<label>
 						<input
 							type="lname"
+							name="lname"
 							value={lname}
-							onChange={(e) => setLname(e.target.value)}
+							onChange={handleInputChange}
 							placeholder="Last name"
 							style={{
 								padding: "5px",
@@ -123,8 +176,9 @@ function Signup() {
 					<label>
 						<input
 							type="dob"
+							name="dob"
 							value={dob}
-							onChange={(e) => setDob(e.target.value)}
+							onChange={handleInputChange}
 							placeholder="Date of birth (YYYY-MM-DD)"
 							style={{
 								padding: "5px",
@@ -138,8 +192,9 @@ function Signup() {
 					<label>
 						<input
 							type="gender"
+							name="gender"
 							value={gender}
-							onChange={(e) => setGender(e.target.value)}
+							onChange={handleInputChange}
 							placeholder="Gender (optional)"
 							style={{
 								padding: "5px",
@@ -153,8 +208,9 @@ function Signup() {
 					<label>
 						<input
 							type="home"
+							name="home"
 							value={home}
-							onChange={(e) => setHome(e.target.value)}
+							onChange={handleInputChange}
 							placeholder="Hometown (optional)"
 							style={{
 								padding: "5px",
@@ -169,8 +225,9 @@ function Signup() {
 					<label>
 						<input
 							type="email"
+							name="email"
 							value={email}
-							onChange={(e) => setEmail(e.target.value)}
+							onChange={handleInputChange}
 							placeholder="Email"
 							style={{
 								padding: "5px",
@@ -184,8 +241,9 @@ function Signup() {
 					<label>
 						<input
 							type="pass"
+							name="pass"
 							value={pass}
-							onChange={(e) => setPass(e.target.value)}
+							onChange={handleInputChange}
 							placeholder="Password"
 							style={{
 								padding: "5px",

@@ -12,17 +12,23 @@ function Login() {
 
 	const handleInputChange = (event) => {
 		const target = event.target;
-		const value = target.value;
+		var value = target.value;
 		const name = target.name;
 
 		if (/\s/.test(value)) {
-			alert("No spaces");
-			return;
+			value = value.replace(/\s/g, "");
 		}
-
-		setEmail(name);
-
-		console.log(name);
+		if (name === "email") {
+			if (value.length > 320) {
+				value = value.slice(0, 320);
+			}
+			setEmail(value);
+		} else if (name == "pass") {
+			if (value.length > 100) {
+				value = value.slice(0, 100);
+			}
+			setPass(value);
+		}
 	};
 
 	useEffect(() => {
@@ -35,9 +41,17 @@ function Login() {
 		}
 	}, [formSubmitted, email, pass]);
 
-	const handleSubmit = (event) => {
+	const handleSubmit = async (event) => {
 		event.preventDefault();
-		if (email !== "" && pass !== "") {
+		if (email.length == 0 || pass.length == 0) {
+			alert("Please fill out all fields");
+			return;
+		}
+		const emailExists = await fetchUsersBySearch(email);
+		if (!emailExists) {
+			alert("Email does not exist");
+			return;
+		} else {
 			setFormSubmitted(true);
 		}
 	};
@@ -79,8 +93,9 @@ function Login() {
 				<label>
 					<input
 						type="email"
+						name="email"
 						value={email}
-						onChange={(e) => setEmail(e.target.value)}
+						onChange={handleInputChange}
 						placeholder="Email"
 						style={{
 							padding: "5px",
@@ -95,8 +110,9 @@ function Login() {
 				<label>
 					<input
 						type="pass"
+						name="pass"
 						value={pass}
-						onChange={(e) => setPass(e.target.value)}
+						onChange={handleInputChange}
 						placeholder="Password"
 						style={{
 							padding: "5px",
