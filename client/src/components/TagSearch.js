@@ -102,7 +102,7 @@ function TagSearch() {
 					type="text"
 					value={query}
 					onChange={handleQueryChange}
-					placeholder="#sunset, beach, #fish"
+					placeholder="#fish"
 					style={{
 						padding: "5px",
 						border: "1px solid #ddd",

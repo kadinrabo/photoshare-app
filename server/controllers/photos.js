@@ -90,14 +90,18 @@ exports.getPhotosByTag = (req, res, next) => {
 	} else if (tag.split(",").length > 1) {
 		const tags = tag.split(",");
 		const search = tags.map((t) => "%" + "#" + t.trim() + "%");
+
 		const query = `
-    SELECT * FROM phototable WHERE pid IN (
-      SELECT pid FROM hastag WHERE tid IN (
-        SELECT tid FROM tagtable
-        WHERE tag ILIKE ANY ($1)
-      )
-    );`;
-		client.query(query, [search], (err, result) => {
+        SELECT * FROM phototable WHERE pid IN (
+            SELECT pid FROM hastag WHERE tid IN (
+                SELECT tid FROM tagtable
+                WHERE tag ILIKE ANY ($1)
+            )
+            GROUP BY pid
+            HAVING COUNT(DISTINCT tid) = $2
+        );`;
+
+		client.query(query, [search, tags.length], (err, result) => {
 			if (err) {
 				return next(err);
 			}
