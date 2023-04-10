@@ -8,6 +8,18 @@ function Comments({ photo }) {
 	const [addComment, setAddComment] = useState("");
 	const [users, setUsers] = useState([]);
 	const [addCommentReady, setAddCommentReady] = useState(false);
+	const [loggedInUser, setLoggedInUser] = useState(null);
+	const uid = localStorage.getItem("uid");
+
+	useEffect(() => {
+		async function fetchUser() {
+			const user = await fetchUsersBySearch(uid);
+			if (user) {
+				setLoggedInUser(user);
+			}
+		}
+		fetchUser();
+	}, [uid]);
 
 	useEffect(() => {
 		async function fetchComments() {
@@ -109,22 +121,24 @@ function Comments({ photo }) {
 						</li>
 					))}
 				</ul>
-				<div style={{ marginBottom: "10px" }}>
-					<input
-						type="text"
-						value={addComment}
-						onChange={handleAddCommentChange}
-						style={{
-							padding: "5px",
-							border: "1px solid #ddd",
-							borderRadius: "5px",
-							marginBottom: "10px",
-							maxWidth: "90%",
-						}}
-						placeholder="Add comment..."
-					/>
-					<button onClick={handleSubmit}>Post</button>
-				</div>
+				{localStorage.getItem("uid") && loggedInUser && (
+					<div style={{ marginBottom: "10px" }}>
+						<input
+							type="text"
+							value={addComment}
+							onChange={handleAddCommentChange}
+							style={{
+								padding: "5px",
+								border: "1px solid #ddd",
+								borderRadius: "5px",
+								marginBottom: "10px",
+								maxWidth: "90%",
+							}}
+							placeholder="Add comment..."
+						/>
+						<button onClick={handleSubmit}>Post</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);

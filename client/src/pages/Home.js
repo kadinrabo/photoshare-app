@@ -58,11 +58,15 @@ function Home() {
 				<div style={{ flex: 0.25 }}>
 					<AllPhotos />
 				</div>
-				<div style={{ flex: 0.25 }}>{loggedInUser && <SearchForFriends />}</div>
+				<div style={{ flex: 0.25 }}>
+					<SearchForFriends />
+				</div>
 				<div style={{ flex: 0.25 }}>
 					<AllAlbums />
 				</div>
-				<div style={{ flex: 0.25 }}>{loggedInUser && <SearchForTags />}</div>
+				<div style={{ flex: 0.25 }}>
+					<SearchForTags />
+				</div>
 			</div>
 		</>
 	);

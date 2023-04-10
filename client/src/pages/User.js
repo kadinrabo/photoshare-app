@@ -10,6 +10,8 @@ function User() {
 	const { uid } = useParams();
 	const [user, setUser] = useState(null);
 	const [isFollowing, setIsFollowing] = useState(false);
+	const [loggedInUser, setLoggedInUser] = useState(null);
+	const uide = localStorage.getItem("uid");
 
 	useEffect(() => {
 		async function fetchData() {
@@ -18,6 +20,16 @@ function User() {
 		}
 		fetchData();
 	}, [uid]);
+
+	useEffect(() => {
+		async function fetchUser() {
+			const user = await fetchUsersBySearch(uide);
+			if (user) {
+				setLoggedInUser(user);
+			}
+		}
+		fetchUser();
+	}, [uide]);
 
 	useEffect(() => {
 		async function checkFriends() {
@@ -81,20 +93,24 @@ function User() {
 					padding: "20px",
 				}}
 			>
-				{user && localStorage.getItem("uid") != uid && (
-					<button
-						style={{
-							background: isFollowing ? "gray" : "#3478f6",
-							color: "white",
-							padding: "10px 20px",
-							borderRadius: "5px",
-							cursor: isFollowing ? "not-allowed" : "pointer",
-						}}
-						onClick={handleFollowClick}
-						disabled={isFollowing}
-					>
-						{buttonText}
-					</button>
+				{localStorage.getItem("uid") && loggedInUser && (
+					<>
+						{user && localStorage.getItem("uid") != uid && (
+							<button
+								style={{
+									background: isFollowing ? "gray" : "#3478f6",
+									color: "white",
+									padding: "10px 20px",
+									borderRadius: "5px",
+									cursor: isFollowing ? "not-allowed" : "pointer",
+								}}
+								onClick={handleFollowClick}
+								disabled={isFollowing}
+							>
+								{buttonText}
+							</button>
+						)}
+					</>
 				)}
 			</div>
 		</>

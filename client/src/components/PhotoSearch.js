@@ -6,7 +6,7 @@ import {
 	fetchPhotosByUid,
 	fetchPhotosByUidTags,
 } from "../api/photos";
-import { fetchUserByPid } from "../api/users";
+import { fetchUserByPid, fetchUsersBySearch } from "../api/users";
 import Photo from "./Photo";
 
 function SearchResult({ photo, onItemClick }) {
@@ -76,6 +76,18 @@ function PhotoSearch() {
 	const [showPopup, setShowPopup] = useState(false);
 	const [photo, setPhoto] = useState(null);
 	const [showMyPhotos, setshowMyPhotos] = useState(false);
+	const [loggedInUser, setLoggedInUser] = useState(null);
+	const uid = localStorage.getItem("uid");
+
+	useEffect(() => {
+		async function fetchUser() {
+			const user = await fetchUsersBySearch(uid);
+			if (user) {
+				setLoggedInUser(user);
+			}
+		}
+		fetchUser();
+	}, [uid]);
 
 	const handleQueryChange = (event) => {
 		setQuery(event.target.value);
@@ -159,18 +171,20 @@ function PhotoSearch() {
 		>
 			<div style={{ display: "flex", alignItems: "center" }}>
 				<h1 style={{ padding: "0px", marginRight: "10px" }}>Photo Search</h1>
-				<button
-					onClick={handleToggleChange}
-					style={{
-						backgroundColor: showMyPhotos ? "#3478f6" : "gray",
-						color: "white",
-						padding: "8px 12px",
-						borderRadius: "4px",
-						cursor: "pointer",
-					}}
-				>
-					{showMyPhotos ? "My Photos" : "All Photos"}
-				</button>
+				{localStorage.getItem("uid") && loggedInUser && (
+					<button
+						onClick={handleToggleChange}
+						style={{
+							backgroundColor: showMyPhotos ? "#3478f6" : "gray",
+							color: "white",
+							padding: "8px 12px",
+							borderRadius: "4px",
+							cursor: "pointer",
+						}}
+					>
+						{showMyPhotos ? "My Photos" : "All Photos"}
+					</button>
+				)}
 			</div>
 			<input
 				type="text"

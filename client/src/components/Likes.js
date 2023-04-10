@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { fetchAddLikeByPid } from "../api/likes";
-import { fetchLikersByPid } from "../api/users";
+import { fetchLikersByPid, fetchUsersBySearch } from "../api/users";
 
 function Likes({ photo }) {
 	const [users, setUsers] = useState([]);
+	const [loggedInUser, setLoggedInUser] = useState(null);
+	const uid = localStorage.getItem("uid");
+
+	useEffect(() => {
+		async function fetchUser() {
+			const user = await fetchUsersBySearch(uid);
+			if (user) {
+				setLoggedInUser(user);
+			}
+		}
+		fetchUser();
+	}, [uid]);
 
 	useEffect(() => {
 		async function fetchUsers() {
@@ -39,20 +51,22 @@ function Likes({ photo }) {
 				<h3 style={{ textAlign: "left" }}>
 					{users.length} {users.length < 2 ? "Like" : "Likes"}
 				</h3>
-				<div style={{ marginBottom: "10px" }}>
-					<button
-						style={{
-							padding: "5px",
-							border: "1px solid #ddd",
-							borderRadius: "5px",
-							marginBottom: "10px",
-							maxWidth: "90%",
-						}}
-						onClick={handleAdd}
-					>
-						Add like
-					</button>
-				</div>
+				{localStorage.getItem("uid") && loggedInUser && (
+					<div style={{ marginBottom: "10px" }}>
+						<button
+							style={{
+								padding: "5px",
+								border: "1px solid #ddd",
+								borderRadius: "5px",
+								marginBottom: "10px",
+								maxWidth: "90%",
+							}}
+							onClick={handleAdd}
+						>
+							Add like
+						</button>
+					</div>
+				)}
 				<ul style={{ listStyle: "none", padding: 0 }}>
 					{users.map((user) => (
 						<li key={user.uid}>
